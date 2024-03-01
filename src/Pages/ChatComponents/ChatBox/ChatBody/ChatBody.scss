@@ -1,0 +1,53 @@
+@import "../../../../Assets/Theme/var";
+
+.chat-window{
+    border-left: 1px solid $light_gray;
+ .chat-body{
+    height: calc(100vh - 310px);
+    overflow: auto;
+ }   
+.chat_form {
+    display: flex;
+    padding: 24px;
+    border-top: 1px solid $light_gray;
+    border-bottom: 1px solid $light_gray;
+
+    .chat_form_icons {
+        display: flex;
+        align-items: center;
+
+        a {
+            margin-right: 20px;
+            padding: 10px;
+            background-color: #cbd5e1;
+            border-radius: 50%;
+            display: grid;
+
+            svg {
+                width: 15px;
+                height: 15px;
+            }
+        }
+    }
+    .msg_send {
+        width: 100%;
+        position: relative;
+        .msg_chat_input{
+            margin: 0px;
+        }
+        .send_btn{
+            max-width: 40px;
+            background-color: transparent;
+            height: 30px;
+            position: absolute;
+            right: 6px;
+            top: 5px;
+            svg{
+                color: $dark_grey;
+            }
+        }
+    }
+
+}
+   
+}

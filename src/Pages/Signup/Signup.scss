@@ -1,0 +1,49 @@
+@import "../../Assets/Theme/var";
+.wrapper_inner_signup {
+  max-width: 624px !important;
+  .signup_field{
+    display: flex;
+    gap: 27px;
+    @media (max-width :767px) {
+        flex-wrap: wrap;
+        gap: 0px;
+    }
+    .signup_field_inner{
+        width: 100%;
+    }
+  }
+
+  .checkbox_terms {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+   
+    .check_box {
+      width: 20px;
+      height: 20px;
+      padding: 0px !important;
+      margin: 10px 10px 0px 0px;
+      border-radius: 2px;
+    }
+    h6{
+      font-size: 17px;
+      padding-left: 10px;
+      color: $dark_grey;
+      font-family: "Open Sans", sans-serif;
+      font-weight: 500;
+      span{
+        color: $blue;
+      }
+    }
+  }
+}
+.error{
+  color: red;
+  padding-bottom: 15px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
+.logoinner{
+  width: 32px;
+  height: 36px;
+}

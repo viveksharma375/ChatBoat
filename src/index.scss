@@ -1,0 +1,34 @@
+@import "../src/Assets/Theme/var";
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+img{
+  width: 100%;
+  height: 100%;
+}
+h1,h2,h3,h4,h5,h6,p,a{
+  padding: 0px;
+  margin: 0px;
+}
+li{
+  list-style: none;
+}
+a{
+  text-decoration: none;
+}
+
+::-webkit-scrollbar{
+  width: 8px;
+  height: 150px;
+}
+
+*:hover::-webkit-scrollbar-thumb{
+  width: 8px;
+  background-color: $light_gray;
+}
+.App {
+  max-height: 100vh;
+  overflow: hidden;
+}

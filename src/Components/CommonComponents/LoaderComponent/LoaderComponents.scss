@@ -1,0 +1,14 @@
+@import "../../../Assets/Theme/var";
+.loader_component {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    background-color: $background_blue;
+    backdrop-filter: blur(10px);
+}

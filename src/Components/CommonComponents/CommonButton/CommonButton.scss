@@ -1,0 +1,14 @@
+@import "../../../Assets/Theme/var.scss";
+
+button {
+   background-color: $blue;
+   width: 100%;
+   border-radius: 5px !important;
+   color: $white;
+   height: 40px;
+   border: none;
+   font-size: 16px !important;
+   font-weight: 600 !important;
+   font-family: "Montserrat", sans-serif !important;
+   margin-top: 10px !important;
+}

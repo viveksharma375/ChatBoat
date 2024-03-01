@@ -1,0 +1,9 @@
+@import "../../../Assets/Theme/var";
+.chat_cox_wrapper{
+    width: 100%;
+}
+.middle{
+    max-height: calc(100vh - 290px);
+    background-color: $background_blue;
+    overflow: auto;
+}

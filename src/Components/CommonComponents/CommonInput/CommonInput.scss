@@ -1,0 +1,17 @@
+ @import "../../../Assets/Theme/_var.scss";
+ input{   
+    display: block;
+    width: 100%;
+    padding: 0.53125rem 1rem;
+    font-size: 0.875rem !important;
+    font-weight: 400;
+    line-height: 1.5 !important;
+    color: #64748b;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid $light_gray;
+    border-radius:5px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    outline: none;
+    margin: 10px 0px 10px 0px !important;
+}

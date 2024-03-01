@@ -1,0 +1,103 @@
+@import "../../Assets/Theme/var";
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: $background_blue;
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    margin: 24px 0px;
+    h5 {
+      font-size: 24px;
+      font-family: "Montserrat";
+    }
+  }
+  .register_link{
+    margin: 24px 0px;
+    font-size: 16px;
+    font-family: "Montserrat";
+    a{
+        color: $blue;
+        font-weight: 500;
+        padding-left: 5px;
+    }
+
+  }
+  .wrapper_inner {
+    background-color: white;
+    max-width: 424px;
+    width: 100%;
+    border-radius: 7px;
+    .modal_wrapper {
+      padding: 24px;
+      border-bottom: 1px solid $light_gray;
+      .forget_password_link{
+        width: 100%;
+        display: flex;
+      a{
+        margin-left:  auto !important;
+        color: $blue;
+        font-weight: 700;
+        text-decoration: none;
+      }
+    }
+    }
+    .auth_options {
+      padding: 24px;
+      p {
+        color: $dark_grey;
+        opacity: 0.7;
+        font-size: 12px;
+        font-weight: 800;
+        font-family: "Poppins", sans-serif;
+        word-spacing: 2px;
+        display: flex;
+        justify-content: center;
+        margin: 12px 0px;
+        letter-spacing: 1px;
+      }
+      .buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        button {
+          max-width: 173px;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: $light_gray;
+          color: $dark_grey;
+          font-size: 16px;
+          gap: 10px;
+          margin-top: 20px;
+          &:hover {
+            background-color: $background_blue;
+            color: $blue;
+            transition: 0.5s ease-in-out;
+            svg {
+              fill: $blue;
+              transition: 0.5s ease-in-out;
+            }
+          }
+          svg {
+            fill: $dark_grey;
+          }
+        }
+      }
+    }
+  }
+}
+.error{
+  color: red;
+  padding-bottom: 15px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
