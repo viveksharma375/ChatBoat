@@ -83,24 +83,21 @@ console.log("Msgdata af sdn ", msgDataMap)
     return (
         <div className="chat-window">
             <div className="chat-body">
-
-            {Object.keys(msgDataMap).map(userId => (
-            msgDataMap[userId].map((msgg, index) => (
-                <div
-                    className="message"
-                    id={userId === msgg.user ? "you" : "other"}
-                    key={index} // Make sure to assign a unique key to each message
-                >
-                    <div className="message-content">
-                        <p>{msgg.message}</p>
-                    </div>
-                    <div className="message-meta">
-                        <p id="time">{msgg.time}</p>
-                        <p id="author">{msgg.user}</p>
-                    </div>
-                </div>
-            ))
-        ))}
+            {msgDataMap[id]?.map((msgg)=>(
+                 <div
+                 className="message"
+                 id={sender === msgg.user ? "you" : "other"}
+                 key={msgg.time} 
+             >
+                 <div className="message-content">
+                     <p>{msgg.message}</p>
+                 </div>
+                 <div className="message-meta">
+                     <p id="time">{msgg.time}</p>
+                     <p id="author">{(msgg.user===sender)? "":msgg.user}</p>
+                 </div>
+             </div>
+            ))}
 
             </div>
 
