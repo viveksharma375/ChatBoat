@@ -16,9 +16,9 @@ interface ChatBoxProps {
 
 }
 interface MsgData {
-    user: string,
+    author: string,
     message: string,
-    time: string,
+    timestamp: string,
 }
 
 export const ChatBody: React.FC<ChatBoxProps> = ({ id, firstName, lastName, email, phoneNumber }) => {
@@ -31,12 +31,12 @@ export const ChatBody: React.FC<ChatBoxProps> = ({ id, firstName, lastName, emai
     const sendMessage = async () => {
         if (currentMsg !== "") {
             const msgData = {
-                user: sender,
+                author: sender,
                 message: currentMsg,
-                time:new Date().toISOString()
+                timestamp:new Date().toISOString()
                     
             };
-            await socket.emit("message_send", msgData, id);
+            socket.emit("message_send", msgData, id);
             updateMsgList(id,msgData)
             // setMsgList((list) => [...list, msgData]);
             setCurrentmsg("");
@@ -63,6 +63,11 @@ console.log("Msgdata af sdn ", msgDataMap)
 
      useEffect(()=>{
         socket.emit("login", userId);
+        socket.emit("fetch_message");
+        socket.on("user_message_data",(data:{[userId: string]: MsgData[]})=>{
+            console.log("MESGAGE D ",data);
+            setMsgDataMap(data)
+     })
      },[userId])
 
      const handleIncomingMessage = (data: MsgData) => {
@@ -83,24 +88,22 @@ console.log("Msgdata af sdn ", msgDataMap)
     return (
         <div className="chat-window">
             <div className="chat-body">
-
-            {Object.keys(msgDataMap).map(userId => (
-            msgDataMap[userId].map((msgg, index) => (
-                <div
-                    className="message"
-                    id={userId === msgg.user ? "you" : "other"}
-                    key={index} // Make sure to assign a unique key to each message
-                >
-                    <div className="message-content">
-                        <p>{msgg.message}</p>
-                    </div>
-                    <div className="message-meta">
-                        <p id="time">{msgg.time}</p>
-                        <p id="author">{msgg.user}</p>
-                    </div>
-                </div>
-            ))
-        ))}
+            {msgDataMap[id]?.map((msgg)=>(
+                 <div
+                 className="message"
+                 id={userId === msgg.author ? "you" : "other"}
+                 key={msgg.timestamp} // Make sure to assign a unique key to each message
+             >
+                 <div className="message-content">
+                     <h5>{msgg.message}</h5>
+                 </div>
+                 <div className="message-meta">
+                     <p id="time">{msgg.timestamp}</p>
+                     <h6 id="author">{(msgg.author===id)? firstName:"You"}</h6>
+                 </div>
+             </div>
+            ))}
+          
 
             </div>
 

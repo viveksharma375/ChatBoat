@@ -47,8 +47,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedId }) => {
     idDetails();
   }, [selectedId,dispatch,token])
   return (
-    <>
-      <div className='chat_cox_wrapper'>
+    <div className='chat_cox_wrapper'>
         {details &&
           <div>
             <div><ChatHead id={details.id} firstName={details.firstName} lastName={details.lastName} phoneNumber={details.phoneNumber} email={details.email} /></div>
@@ -56,7 +55,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedId }) => {
           </div>
         }
       </div>
-    </>
   )
 }
 export default ChatBox;
