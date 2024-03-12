@@ -39,15 +39,15 @@ export const ChatHead: React.FC<ChatBoxProps> = ({ id, firstName, lastName, emai
   const userId = useSelector((state: any) => state.user.userId);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    socket.on("userStatusUpdate", (data) => {
-      dispatch(userList({ userOnline: data }));
-    })
-  }, [token, dispatch]);
+  // useEffect(() => {
+  //   socket.on("userStatusUpdate", (data) => {
+  //     dispatch(userList({ userOnline: data }));
+  //   })
+  // }, [token, dispatch]);
 
   useEffect(() => {
     socket.emit("login", userId);
-  },[userId])
+  }, [userId])
 
   return (
     <>

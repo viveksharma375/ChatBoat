@@ -61,16 +61,16 @@ import { API_BASE_URL } from "../constants";
 
 export const ForgetPasswordApi = async (values: any) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/v1/otp/send-otp`,values, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+        const response = await axios.post(`${API_BASE_URL}/v1/otp/send-otp`, values, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         console.log('API response:', response.data);
-      return response.data; 
+        return response.data;
     } catch (error) {
         console.log(error, "getting error from Forgetpassword");
-      return{ error }; 
+        return { error };
     }
 };
 
@@ -176,7 +176,7 @@ export const LoginApi = async (values: any) => {
 }
 export const IdDetails = async (values: any, token: any) => {
     try {
-        const response = await axios.get(`http://10.10.1.75:3004/v1/user/${values}`, {
+        const response = await axios.get(`${API_BASE_URL}/v1/user/${values}`, {
             headers: {
                 'Content-Type': 'application/json',
                 "api-access-token": token

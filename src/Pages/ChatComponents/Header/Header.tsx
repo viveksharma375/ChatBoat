@@ -4,14 +4,15 @@ import userImage from "../../../Assets/images/3.jpg";
 import { ChatIcon, ContactsIcon, FilesIcon, NotificationIcon } from "../../../Assets/svg/svg";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import {logoutUser} from "../../../Redux/slices/userslice";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../../Redux/slices/userslice";
 
 
 export const Header = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
-  
+    const user = useSelector((state: any) => state.user.name);
+
     const handlelogout = () => {
         dispatch(logoutUser())
         navigate("/")
@@ -28,6 +29,7 @@ export const Header = () => {
                     </div>
                 </div>
                 <div className='header_inner_right'>
+                    <h2>{user}</h2>
                     <Dropdown>
                         <Dropdown.Toggle id="dropdown-basic">
                             <div className='notification_icon'>

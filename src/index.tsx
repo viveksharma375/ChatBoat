@@ -18,16 +18,15 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <GoogleOAuthProvider clientId='1085191055293-g9ltpl8u9im9s2ghqqnbilrse7598qha.apps.googleusercontent.com'>
-          <App />
-          <ToastContainer/>
-        </GoogleOAuthProvider>
-      </PersistGate>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <GoogleOAuthProvider clientId='1085191055293-g9ltpl8u9im9s2ghqqnbilrse7598qha.apps.googleusercontent.com'>
+        <App />
+        <ToastContainer />
+      </GoogleOAuthProvider>
+    </PersistGate>
+  </Provider>
+
 );
 
 reportWebVitals();

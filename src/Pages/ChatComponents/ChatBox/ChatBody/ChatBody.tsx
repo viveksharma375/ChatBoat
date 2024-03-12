@@ -19,91 +19,110 @@ interface MsgData {
     author: string,
     message: string,
     timestamp: string,
+    seen?: boolean,
 }
 
 export const ChatBody: React.FC<ChatBoxProps> = ({ id, firstName, lastName, email, phoneNumber }) => {
     const userId = useSelector((state: any) => state.user.userId);
-    const sender = useSelector((state:any)=>state.user.name);
-    console.log(id,"chat body id");
-    
+    const sender = useSelector((state: any) => state.user.name);
+    console.log("chat body id", id);
+    console.log('this is useeeeeee', sender)
+    console.log('this is useeeeeee', userId)
+
     const [currentMsg, setCurrentmsg] = useState("");
     const [msgDataMap, setMsgDataMap] = useState<{ [userId: string]: MsgData[] }>({});
+
+    const updateMsgList = (userId: string, newMsg: MsgData) => {
+        setMsgDataMap(prevMsgDataMap => {
+
+            const updatedMsgList = [...(prevMsgDataMap[userId] || []), newMsg];
+            console.log("this is updated msg list", updatedMsgList)
+
+            return {
+                ...prevMsgDataMap,
+                [userId]: updatedMsgList
+            };
+        });
+
+    };
+
     const sendMessage = async () => {
         if (currentMsg !== "") {
             const msgData = {
-                author: sender,
+                author: userId,
                 message: currentMsg,
-                timestamp:new Date().toISOString()
-                    
+                timestamp: new Date().toISOString()
+
             };
             socket.emit("message_send", msgData, id);
-            updateMsgList(id,msgData)
+            updateMsgList(id, msgData)
             // setMsgList((list) => [...list, msgData]);
             setCurrentmsg("");
         }
     };
-    function testing(){
-        console.log("Id sfidgh sdigh ",msgDataMap[id]);
-        // Object.keys(msgDataMap).map((userId:any)=>{
-        //     console.log("Teasrghas rg",userId)
-        // } )
-    }
-    testing()
- // Function to update message list for a specific user
- const updateMsgList = (userId: string, newMsg: MsgData) => {
-    setMsgDataMap(prevMsgDataMap => {
-        const updatedMsgList = [...(prevMsgDataMap[userId] || []), newMsg];
-        return {
-            ...prevMsgDataMap,
-            [userId]: updatedMsgList
-        };
-    });
-};
-console.log("Msgdata af sdn ", msgDataMap)
+    // function testing() {
+    //     console.log("Id sfidgh sdigh ", msgDataMap[id]);
+    //     // Object.keys(msgDataMap).map((userId:any)=>{
+    //     //     console.log("Teasrghas rg",userId)
+    //     // } )
+    // }
+    // testing()
+    // Function to update message list for a specific user
+    var i = 0;
 
-     useEffect(()=>{
+    console.log("Msgdata af sdn", i++, msgDataMap)
+
+    useEffect(() => {
         socket.emit("login", userId);
         socket.emit("fetch_message");
-        socket.on("user_message_data",(data:{[userId: string]: MsgData[]})=>{
-            console.log("MESGAGE D ",data);
+        socket.on("user_message_data", (data: { [userId: string]: MsgData[] }) => {
+            console.log("MESGAGE D ", data);
+            console.log("this is messae iddd", userId)
             setMsgDataMap(data)
-     })
-     },[userId])
+        })
+    }, [userId])
 
-     const handleIncomingMessage = (data: MsgData) => {
-        
+    const handleIncomingMessage = (data: MsgData) => {
+
         //TODO
         updateMsgList(id, data);
         //  setMsgList((list) => [...list, data]);
-         setCurrentmsg("");
-     };
+        setCurrentmsg("");
+    };
     useEffect(() => {
         socket.on("message", handleIncomingMessage);
         return () => {
             socket.off("message", handleIncomingMessage);
         };
-        
+
     }, [msgDataMap]);
 
     return (
         <div className="chat-window">
             <div className="chat-body">
-            {msgDataMap[id]?.map((msgg)=>(
-                 <div
-                 className="message"
-                 id={userId === msgg.author ? "you" : "other"}
-                 key={msgg.timestamp} // Make sure to assign a unique key to each message
-             >
-                 <div className="message-content">
-                     <h5>{msgg.message}</h5>
-                 </div>
-                 <div className="message-meta">
-                     <p id="time">{msgg.timestamp}</p>
-                     <h6 id="author">{(msgg.author===id)? firstName:"You"}</h6>
-                 </div>
-             </div>
-            ))}
-          
+                {msgDataMap[id]?.map((msgg) => (
+                    <div className='container' key={msgg.timestamp}>
+                        <div
+                            // ref={msg}
+                            className="message"
+                            id={msgg.author === userId ? "you" : "other"}
+                            key={msgg.timestamp} // Make sure to assign a unique key to each message
+                        >
+                            <div className="message-content">
+
+                                <p>{msgg.message}</p>
+                                <p>{msgg.seen === true ? "seen" : "unseen"}</p>
+                            </div>
+                            <div className="message-meta">
+                                <p id="time"><span>
+                                    {new Date(msgg.timestamp).toLocaleTimeString()}</span>
+                                    <span id="author">{(msgg.author === id) ? firstName : "You"}</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                ))}
+
 
             </div>
 
@@ -125,7 +144,7 @@ console.log("Msgdata af sdn ", msgDataMap)
                             event.key === "Enter" && sendMessage();
                         }}
                     />
-                    <CommonButton className='send_btn' onClick={sendMessage}><IoSendSharp/></CommonButton>
+                    <CommonButton className='send_btn' onClick={sendMessage}><IoSendSharp /></CommonButton>
                 </div>
             </div>
         </div>
