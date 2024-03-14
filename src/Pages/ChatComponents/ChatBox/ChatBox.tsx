@@ -21,17 +21,17 @@ interface ChatterId {
 const ChatBox: React.FC<ChatBoxProps> = ({ selectedId }) => {
   const dispatch = useDispatch();
   const userOnline = useSelector((state: any) => state.user.userOnline);
-  console.log("this is userOnline", userOnline);
-  console.log("socket sid fsoidhf ihsdg ", selectedId)
+  // console.log("this is userOnline", userOnline);
+  // console.log("socket sid fsoidhf ihsdg ", selectedId)
   const [details, setDetails] = useState<ChatterId | null>(null);
   const token = useSelector((state: any) => state.user.token);
   const idDetails = async () => {
-    console.log("this is user id heloooooooooooo")
+    // console.log("this is user id heloooooooooooo")
     try {
       const response = await IdDetails(selectedId, token);
       if (response.status === 200) {
         let user: ChatterId = response.data.result.data;
-        console.log(" user si ", user)
+        // console.log(" user si ", user)
         setDetails(user);
       }
     } catch (error) {
@@ -41,7 +41,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedId }) => {
 
   useEffect(() => {
     socket.on("userStatusUpdate", (data) => {
-      console.log("data is ", data)
+      // console.log("data is ", data)
       dispatch(userList({ userOnline: data }));
     })
 

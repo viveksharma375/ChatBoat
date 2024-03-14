@@ -81,11 +81,37 @@
             &:hover{
                 background-color: $background_blue;
             }
+            p{
+                margin: 0px;
+            }
         }
         .sidebar_profile{
             display: flex;
             align-items: center;
             padding: 12px 24px;
+            .okkkkk{
+                max-width: 900px;
+            }
+
+            .chat_info{
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+            .ntn_message{
+                padding: 7px;
+                border-radius: 50%;
+            background-color: rgb(91, 91, 236);
+            font-size: 12px;
+            font-family: "Monteserrat", "sans-serif";
+            font-weight: 500;
+            color: $white;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            }
+            }
             .girl_image{
                 width: 48px;
                 height: 48px;

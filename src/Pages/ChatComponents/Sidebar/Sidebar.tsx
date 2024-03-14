@@ -10,8 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../../../helpers/socket.io';
 import { userList } from '../../../Redux/slices/userslice';
 import CommonModal from '../../../Components/CommonComponents/CommonModal/CommonModal';
-import { MdAddIcCall, MdPersonAddAlt1 } from 'react-icons/md';
-import { IoIosVideocam } from 'react-icons/io';
+
 
 interface SidebarProps {
   id: any;
@@ -25,54 +24,86 @@ export const Sidebar: React.FC<SidebarProps> = ({ id, onIdChange }) => {
   const userId = useSelector((state: any) => state.user.userId);
   const [notificaton, setNotification] = useState<{ [userId: string]: number }>({});
   const [contact, setContact] = useState([]);
+  const [changeId, setChangeId] = useState(id);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  console.log("changeeeeeeid", changeId)
+
+
 
   const selected = (uId: any) => {
+    setChangeId(uId);
     onIdChange(uId);
+    setNotification(prevNotification => ({
+      ...prevNotification,
+      [uId]: 0
+    }));
+
   }
 
   const fetchingDetails = async () => {
     const response = await ContactDetails(token);
     setContact(response.data.result.data)
   }
-  const handleCloseModal = () => {
-    console.log("modal closed");
-  };
+
 
   const filteredContacts = contact.filter((item: any) =>
     `${item.firstName} ${item.lastName} ${item.email}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   const handleIncomingMessage = (data: any) => {
-    setNotification(prevNotification => {
+    // console.log("Selecte di f", id)
+    console.log("selecte did sig handle incomimh ", data.author, " === ", changeId)
+    if (data.author !== changeId) {
+      setNotification(prevNotification => {
 
-      const updatedMsgList = (prevNotification[data.author] || 0) + 1;
-      console.log("this is updated msg list", updatedMsgList)
-
-      return {
-        ...prevNotification,
-        [data.author]: updatedMsgList
-      };
-    });
-    console.log("incoming msgggggggg", data);
+        const updatedMsgList = (prevNotification[data.author] || 0) + 1;
+        return {
+          ...prevNotification,
+          [data.author]: updatedMsgList
+        };
+      });
+    } else {
+      console.log("No notifiiation for ", data.author, ">>>>>>>", changeId)
+    }
   }
+
+  useEffect(() => {
+    socket.on("message", handleIncomingMessage);
+  }, [])
+
+  useEffect(() => {
+    setChangeId(id)
+  }, [id])
   useEffect(() => {
     socket.emit("login", userId);
-    console.log("this is contact", userId);
+    // console.log("this is contact", userId);
   }, [userId])
 
   useEffect(() => {
     fetchingDetails();
-    socket.on("message", handleIncomingMessage);
+
+
     socket.on("userStatusUpdate", (data) => {
       dispatch(userList({ userOnline: data }));
-      console.log("this is userOnline", data);
+      // console.log("this is userOnline", data);
     })
   }, [dispatch, token]);
 
-  useEffect(() => {
 
-    console.log("this is notificatopn", notificaton)
-  }, [notificaton])
+  // useEffect(() => {
+  //   console.log("REdnediejiorjgorsngprdoigjhergj")
+  // }, [notificaton])
+
+  // useEffect(() => {
+
+  //   console.log("this is notificatopn", notificaton)
+  //   setNotification((prevNotification) => ({
+  //     ...prevNotification,
+  //     ...notificaton,
+  //   }));
+  // }, [setNotification])
+
+
 
   return (
     <>
@@ -82,12 +113,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ id, onIdChange }) => {
           <CommonHeading>Chats</CommonHeading>
           <div className='sidebar_icons'>
 
-            <CommonModal modalText={
-              <div style={{ maxHeight: "200px" }}>
+            <CommonModal
+              modalText={
+                <div style={{ maxHeight: "200px" }}>
 
 
-              </div>
-            }>
+                </div>
+              }>
               <div><Plus /><span>New</span></div>
             </CommonModal>
 
@@ -115,12 +147,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ id, onIdChange }) => {
                 <div key={item.id}>
                   <div className='sidebar_profile' onClick={() => selected(item.id)}>
                     <div className='girl_image'><img src={girlImg} alt="" /></div>
-                    <div>
-                      <h5>{item.firstName} {item.lastName}</h5>
-                      <p>{item.email}
-                        <br />
-                        {userOnline.includes(item.id) ? "online" : "offline"}</p>
+                    <div className='outer'>
 
+
+                      <h5>{item.firstName} {item.lastName}</h5>
+
+                      <div className='okkkkk'>
+
+                        <p>{item.email}</p>
+                        <div className='chat_info'>
+
+                          <p> {userOnline.includes(item.id) ? "online" : "offline"}</p>
+                          {notificaton[item.id] > 0 ?
+                            <>
+                              {
+                                notificaton[item.id] && notificaton[item.id] > 0 && (
+                                  <p className="ntn_message">{notificaton[item.id]}</p>
+                                )
+                              }
+                            </>
+                            : <>{
+                              notificaton[item.id] == 0 && (
+                                <p className=""></p>
+                              )
+                            } </>
+                          }
+
+                        </div>
+
+                      </div>
                     </div>
                   </div>
                 </div>

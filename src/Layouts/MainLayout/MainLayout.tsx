@@ -13,7 +13,7 @@ const MainLayout = () => {
   };
 
   useEffect(() => {
-  },[selectedId])
+  }, [selectedId])
 
   return (
     <>

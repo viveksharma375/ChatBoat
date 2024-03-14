@@ -24,15 +24,14 @@ interface MsgData {
 
 export const ChatBody: React.FC<ChatBoxProps> = ({ id, firstName, lastName, email, phoneNumber }) => {
     const userId = useSelector((state: any) => state.user.userId);
-    const sender = useSelector((state: any) => state.user.name);
-    console.log("chat body id", id);
-    console.log('this is useeeeeee', sender)
-    console.log('this is useeeeeee', userId)
+    console.log("this is the reciever  id", id);
+    console.log('this is the current user using this ', userId)
 
     const [currentMsg, setCurrentmsg] = useState("");
     const [msgDataMap, setMsgDataMap] = useState<{ [userId: string]: MsgData[] }>({});
 
     const updateMsgList = (userId: string, newMsg: MsgData) => {
+
         setMsgDataMap(prevMsgDataMap => {
 
             const updatedMsgList = [...(prevMsgDataMap[userId] || []), newMsg];
@@ -60,41 +59,26 @@ export const ChatBody: React.FC<ChatBoxProps> = ({ id, firstName, lastName, emai
             setCurrentmsg("");
         }
     };
-    // function testing() {
-    //     console.log("Id sfidgh sdigh ", msgDataMap[id]);
-    //     // Object.keys(msgDataMap).map((userId:any)=>{
-    //     //     console.log("Teasrghas rg",userId)
-    //     // } )
-    // }
-    // testing()
-    // Function to update message list for a specific user
-    var i = 0;
 
-    console.log("Msgdata af sdn", i++, msgDataMap)
 
     useEffect(() => {
         socket.emit("login", userId);
         socket.emit("fetch_message");
         socket.on("user_message_data", (data: { [userId: string]: MsgData[] }) => {
-            console.log("MESGAGE D ", data);
-            console.log("this is messae iddd", userId)
             setMsgDataMap(data)
         })
     }, [userId])
 
     const handleIncomingMessage = (data: MsgData) => {
-
-        //TODO
-        updateMsgList(id, data);
-        //  setMsgList((list) => [...list, data]);
+        updateMsgList(data.author, data);
         setCurrentmsg("");
     };
+
     useEffect(() => {
         socket.on("message", handleIncomingMessage);
         return () => {
             socket.off("message", handleIncomingMessage);
         };
-
     }, [msgDataMap]);
 
     return (
@@ -103,10 +87,9 @@ export const ChatBody: React.FC<ChatBoxProps> = ({ id, firstName, lastName, emai
                 {msgDataMap[id]?.map((msgg) => (
                     <div className='container' key={msgg.timestamp}>
                         <div
-                            // ref={msg}
                             className="message"
                             id={msgg.author === userId ? "you" : "other"}
-                            key={msgg.timestamp} // Make sure to assign a unique key to each message
+                            key={msgg.timestamp}
                         >
                             <div className="message-content">
 
