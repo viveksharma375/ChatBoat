@@ -60,7 +60,8 @@ const Login = (props) => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: (values) => {
-      props.loginUser(values.email, values.password, props.router.navigate);
+      
+      props.loginUser(values.phoneNumberOrEmail, values.password, props.router.navigate);
     },
   });
 
@@ -69,8 +70,7 @@ const Login = (props) => {
   }
 
   return (
-    <React.Fragment>
-      <div className="account-pages my-5 pt-sm-5">
+    <div className="account-pages my-5 pt-sm-5">
         <Container>
           <Row className="justify-content-center">
             <Col md={8} lg={6} xl={5}>
@@ -120,10 +120,8 @@ const Login = (props) => {
                             onBlur={formik.handleBlur}
                             value={formik.values.phoneNumberOrEmail}
                             invalid={
-                              formik.touched.phoneNumberOrEmail &&
-                              formik.errors.phoneNumberOrEmail
-                                ? true
-                                : false
+                              !!(formik.touched.phoneNumberOrEmail &&
+                              formik.errors.phoneNumberOrEmail)
                             }
                           />
                           {formik.touched.phoneNumberOrEmail &&
@@ -159,9 +157,8 @@ const Login = (props) => {
                             onBlur={formik.handleBlur}
                             value={formik.values.password}
                             invalid={
-                              formik.touched.password && formik.errors.password
-                                ? true
-                                : false
+                              (formik.touched.password && formik.errors.password)
+                              
                             }
                           />
                           {formik.touched.password && formik.errors.password ? (
@@ -223,7 +220,6 @@ const Login = (props) => {
           </Row>
         </Container>
       </div>
-    </React.Fragment>
   );
 };
 

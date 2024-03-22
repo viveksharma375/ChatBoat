@@ -25,7 +25,7 @@ const Logout = (props) => {
         return <Navigate to="/login" />;
       }
 
-    return (<React.Fragment></React.Fragment>)
+    return (<></>)
 }
 
 export default withRouter(connect(null, { logoutUser })(Logout));

@@ -14,7 +14,7 @@ const AuthProtected = (props) => {
     /*
       Navigate is un-auth access protected routes via url
       */
-  
+        
       if (props.isAuthProtected && !localStorage.getItem("authUser")) {
             return (
                 <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
@@ -31,13 +31,12 @@ const Routes = () => {
     const { layoutMode } = useSelector(state => ({
         layoutMode: state.Layout.layoutMode,
       }));
-
+    
     useEffect(() => {
         localStorage.setItem("layoutMode",layoutMode)
     }, [layoutMode])
     return (
         // rendering the router with layout
-            <React.Fragment>
             <Suspense fallback = {<div></div>} >
                 <SwitchRoute>
                     {/* public routes */}
@@ -71,7 +70,6 @@ const Routes = () => {
                     )}
                 </SwitchRoute>
                 </Suspense>
-            </React.Fragment>
     );
 }
 

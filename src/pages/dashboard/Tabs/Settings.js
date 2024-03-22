@@ -54,7 +54,6 @@ function Settings(props) {
     const toggle = () => setDropdownOpen(!dropdownOpen);
 
     return (
-        <React.Fragment>
             <div>
                 <div className="px-4 pt-4">
                     <h4 className="mb-0">{t('Settings')}</h4>
@@ -267,7 +266,6 @@ function Settings(props) {
                 </SimpleBar>
                 {/* End User profile description */}
             </div>
-        </React.Fragment>
     );
 }
 

@@ -51,7 +51,7 @@ const ForgetPassword = (props) => {
     }
 
     return (
-        <React.Fragment>
+       
             <div className="account-pages my-5 pt-sm-5">
                 <Container>
                     <Row className="justify-content-center">
@@ -119,7 +119,7 @@ const ForgetPassword = (props) => {
                     </Row>
                 </Container>
             </div>
-        </React.Fragment>
+     
     )
 }
 

@@ -44,7 +44,6 @@ function Profile(props) {
   const toggle = () => setDropdownOpen(!dropdownOpen);
 
   return (
-    <React.Fragment>
       <div>
         <div className="px-4 pt-4">
           <div className="user-chat-nav float-end">
@@ -145,7 +144,6 @@ function Profile(props) {
         </div>
         {/* end user-profile-desc  */}
       </div>
-    </React.Fragment>
   );
 }
 

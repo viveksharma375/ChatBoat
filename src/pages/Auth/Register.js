@@ -104,7 +104,7 @@ const Register = (props) => {
   });
 
   return (
-    <React.Fragment>
+   
       <div className="account-pages my-5 pt-sm-5">
         <Container className="max-width-0">
           <Row className="justify-content-center">
@@ -161,10 +161,9 @@ const Register = (props) => {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.firstName}
                                 invalid={
-                                  formik.touched.firstName &&
-                                  formik.errors.firstName
-                                    ? true
-                                    : false
+                                 ( formik.touched.firstName &&
+                                  formik.errors.firstName)
+                                 
                                 }
                               />
                               {formik.touched.firstName &&
@@ -195,10 +194,9 @@ const Register = (props) => {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.lastName}
                                 invalid={
-                                  formik.touched.lastName &&
-                                  formik.errors.lastName
-                                    ? true
-                                    : false
+                                  (formik.touched.lastName &&
+                                  formik.errors.lastName)
+                                  
                                 }
                               />
                               {formik.touched.lastName &&
@@ -229,9 +227,8 @@ const Register = (props) => {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.email}
                                 invalid={
-                                  formik.touched.email && formik.errors.email
-                                    ? true
-                                    : false
+                                  (formik.touched.email && formik.errors.email)
+                        
                                 }
                               />
                               {formik.touched.email && formik.errors.email ? (
@@ -261,10 +258,9 @@ const Register = (props) => {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.phoneNumber}
                                 invalid={
-                                  formik.touched.phoneNumber &&
-                                  formik.errors.phoneNumber
-                                    ? true
-                                    : false
+                                  (formik.touched.phoneNumber &&
+                                  formik.errors.phoneNumber)
+                                    
                                 }
                               />
                               {formik.touched.phoneNumber &&
@@ -297,10 +293,9 @@ const Register = (props) => {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.password}
                                 invalid={
-                                  formik.touched.password &&
-                                  formik.errors.password
-                                    ? true
-                                    : false
+                                (  formik.touched.password &&
+                                  formik.errors.password)
+                                
                                 }
                               />
                               {formik.touched.password &&
@@ -331,10 +326,9 @@ const Register = (props) => {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.confirmPassword}
                                 invalid={
-                                  formik.touched.confirmPassword &&
-                                  formik.errors.confirmPassword
-                                    ? true
-                                    : false
+                                  (formik.touched.confirmPassword &&
+                                  formik.errors.confirmPassword)
+                                  
                                 }
                               />
                               {formik.touched.confirmPassword &&
@@ -381,7 +375,7 @@ const Register = (props) => {
           </Row>
         </Container>
       </div>
-    </React.Fragment>
+  
   );
 };
 

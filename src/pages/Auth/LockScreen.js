@@ -31,7 +31,7 @@ function LockScreen(props) {
     });
 
     return (
-        <React.Fragment>
+       
             <div className="account-pages my-5 pt-sm-5">
             <Container>
                 <Row className="justify-content-center">
@@ -71,7 +71,7 @@ function LockScreen(props) {
                                                     onChange={formik.handleChange}
                                                     onBlur={formik.handleBlur}
                                                     value={formik.values.password}
-                                                    invalid={formik.touched.password && formik.errors.password ? true : false}
+                                                    invalid={(formik.touched.password && formik.errors.password)}
                                                 />
                                                 {formik.touched.password && formik.errors.password ? (
                                                     <FormFeedback type="invalid">{formik.errors.password}</FormFeedback>
@@ -97,7 +97,6 @@ function LockScreen(props) {
                 </Row>
             </Container>
         </div>
-        </React.Fragment>
     );
 }
 

@@ -56,12 +56,12 @@ class Chats extends Component {
     let filteredArray = [];
 
     //find conversation name from array
-    for (let i = 0; i < conversation.length; i++) {
+    for (const element of conversation) {
       if (
-        conversation[i].name.toLowerCase().includes(search) ||
-        conversation[i].name.toUpperCase().includes(search)
+        element.name.toLowerCase().includes(search) ||
+        element.name.toUpperCase().includes(search)
       )
-        filteredArray.push(conversation[i]);
+        filteredArray.push(element);
     }
 
     //set filtered items to state
@@ -76,27 +76,27 @@ class Chats extends Component {
     e.preventDefault();
 
     //find index of current chat in array
-    var index = this.props.recentChatList.indexOf(chat);
+    let index = this.props.recentChatList.indexOf(chat);
 
     // set activeUser
     this.props.activeUser(index);
 
-    var chatList = document.getElementById("chat-list");
-    var clickedItem = e.target;
-    var currentli = null;
+    let chatList = document.getElementById("chat-list");
+    let clickedItem = e.target;
+    let currentli = null;
 
     if (chatList) {
-      var li = chatList.getElementsByTagName("li");
+      let li = chatList.getElementsByTagName("li");
       //remove coversation user
-      for (var i = 0; i < li.length; ++i) {
-        if (li[i].classList.contains("active")) {
-          li[i].classList.remove("active");
+      for (const element of li) {
+        if (element.classList.contains("active")) {
+          element.classList.remove("active");
         }
       }
       //find clicked coversation user
-      for (var k = 0; k < li.length; ++k) {
-        if (li[k].contains(clickedItem)) {
-          currentli = li[k];
+      for (const element of li) {
+        if (element.contains(clickedItem)) {
+          currentli = element;
           break;
         }
       }
@@ -107,13 +107,13 @@ class Chats extends Component {
       currentli.classList.add("active");
     }
 
-    var userChat = document.getElementsByClassName("user-chat");
+    let userChat = document.getElementsByClassName("user-chat");
     if (userChat) {
       userChat[0].classList.add("user-chat-show");
     }
 
     //removes unread badge if user clicks
-    var unread = document.getElementById("unRead" + chat.id);
+    let unread = document.getElementById("unRead" + chat.id);
     if (unread) {
       unread.style.display = "none";
     }
@@ -121,7 +121,7 @@ class Chats extends Component {
 
   render() {
     return (
-      <React.Fragment>
+    
         <div>
           <div className="px-4 pt-4">
             <h4 className="mb-4">Chats</h4>
@@ -277,7 +277,6 @@ class Chats extends Component {
           </div>
           {/* End chat-message-list */}
         </div>
-      </React.Fragment>
     );
   }
 }
