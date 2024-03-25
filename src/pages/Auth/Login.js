@@ -60,7 +60,10 @@ const Login = (props) => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: (values) => {
-      props.loginUser(values.email, values.password, props.router.navigate);
+      console.log("This is valuesss", values);
+
+      props.loginUser(values, props.router.navigate);
+      console.log("loginUser function called");
     },
   });
 
