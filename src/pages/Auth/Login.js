@@ -50,7 +50,7 @@ const Login = (props) => {
   // validation
   const formik = useFormik({
     initialValues: {
-      phoneNumberOrEmail: "admin@themesbrand.com",
+      phoneNumberOrEmail: "",
       password: "",
     },
     validationSchema: Yup.object({

@@ -37,40 +37,32 @@ const create = new APIClient().create;
  * Login the user
  * @param {*} payload - username and password 
  */
-async function  login({ payload: { username, password, history } }) {
+function* login({ payload: { username, password, history } }) {
+    let data = {
+        phoneNumberOrEmail: username,
+        password: password
+    }
+ 
     try {
-        let data ={
-            phoneNumberOrEmail: username,
-            password: password
-        }
-        console.log("data",data)
-        let response  = await fetch("http://10.10.1.75:3004/v1/user/login",  {
-            method:"POST",
+        console.log("data", data)
+        let response = yield fetch("http://10.10.1.75:3004/v1/user/login", {
+            method: "POST",
             headers: {
                 'Content-type': "application/json",
             },
-            body:JSON.stringify(data)
+            body: JSON.stringify(data)
         })
-        console.log("response ",response)
-        let responsedata = await response.json()
-        console.log("respnse",responsedata)
+        // console.log("response is", response)
+        let responsedata = yield response.json()
+        console.log("respnse", responsedata.data.result.token)
+        yield put(loginUserSuccess(responsedata.data.result.token));
+        localStorage.setItem("authUser",JSON.stringify(responsedata.data.result.token))
 
 
-        // if(process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-        //     const response = yield call(fireBaseBackend.loginUser, username, password);
-        //     yield put(loginUserSuccess(response));
-
-        // } else {
-        //     const response = yield call(create, '/login', { username, password });
-        //     localStorage.setItem("authUser", JSON.stringify(response));
-        //     yield put(loginUserSuccess(response));
-
-
-        // }
         history('/dashboard');
     } catch (error) {
-        // yield put(apiError(error));
-        console.log("error in ",error)
+        yield put(apiError(error));
+        console.log("error in ", error)
     }
 }
 
