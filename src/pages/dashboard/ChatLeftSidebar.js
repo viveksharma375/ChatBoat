@@ -11,17 +11,17 @@ import Contacts from "./Tabs/Contacts";
 import Settings from "./Tabs/Settings";
 
 function ChatLeftSidebar(props) {
-
+    console.log("spoejfpshfpoijjofijfffffffffffffffffff",props)
     const activeTab = props.activeTab;
 
     return (
-        <React.Fragment>
-            <div className="chat-leftsidebar me-lg-1">
-
+        <div className="chat-leftsidebar me-lg-1">
+               
                 <TabContent activeTab={activeTab}>
                     {/* Start Profile tab-pane */}
                     <TabPane tabId="profile" id="pills-user">
                         {/* profile content  */}
+                      
                         <Profile />
                     </TabPane>
                     {/* End Profile tab-pane  */}
@@ -57,7 +57,6 @@ function ChatLeftSidebar(props) {
                 {/* end tab content */}
 
             </div>
-        </React.Fragment>
     );
 }
 

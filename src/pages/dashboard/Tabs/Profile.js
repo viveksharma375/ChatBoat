@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dropdown,
   DropdownMenu,
@@ -16,18 +16,21 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 //i18n
 import { useTranslation } from "react-i18next";
+import API from "../../../helpers/api";
 
 function Profile(props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen1, setIsOpen1] = useState(true);
   const [isOpen2, setIsOpen2] = useState(false);
+  const [profile,setProfile] = useState(null);
   const [files] = useState([
     { name: "Admin-A.zip", size: "12.5 MB", thumbnail: "ri-file-text-fill" },
     { name: "Image-1.jpg", size: "4.2 MB", thumbnail: "ri-image-fill" },
     { name: "Image-2.jpg", size: "3.1 MB", thumbnail: "ri-image-fill" },
     { name: "Landing-A.zip", size: "6.7 MB", thumbnail: "ri-file-text-fill" },
   ]);
-
+  const token = localStorage.getItem("api-access-token")?localStorage.getItem("api-access-token"):"";
+  const apiInstance = new API();
   /* intilize t variable for multi language implementation */
   const { t } = useTranslation();
 
@@ -36,14 +39,35 @@ function Profile(props) {
     setIsOpen2(false);
   };
 
+
   const toggleCollapse2 = () => {
     setIsOpen2(!isOpen2);
     setIsOpen1(false);
   };
 
   const toggle = () => setDropdownOpen(!dropdownOpen);
+  const fetchDetails=async ()=>{
+    // const data = JSON.parse(localStorage.getItem("authUser"));
+
+    // setProfile(data)
+    const response = await apiInstance.getWithToken("/user/email", token)
+        if (response.status) {
+            
+            console.log("dfnosifjvsprjgvsr",response.message.data)
+            
+            const profileData = response.message.data;;
+            console.log("profile dats ",profileData)
+            setProfile(profileData)
+        }
+
+  }
+  useEffect(()=>{
+    fetchDetails();
+  },[])
 
   return (
+    <>
+        {profile &&
       <div>
         <div className="px-4 pt-4">
           <div className="user-chat-nav float-end">
@@ -75,7 +99,7 @@ function Profile(props) {
           </div>
 
           <h5 className="font-size-16 mb-1 text-truncate">
-            {t("Patricia Smith")}
+            {t(profile.firstName+" "+profile.lastName)}
           </h5>
           <p className="text-muted text-truncate mb-1">
             <i className="ri-record-circle-fill font-size-10 text-success me-1 d-inline-block"></i>{" "}
@@ -89,7 +113,7 @@ function Profile(props) {
           <div className="text-muted">
             <p className="mb-4">
               {t(
-                "If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual."
+                (profile.about )? profile.about : "Hey!  I am using ChatMe"
               )}
             </p>
           </div>
@@ -105,17 +129,17 @@ function Profile(props) {
               >
                 <div>
                   <p className="text-muted mb-1">{t("Name")}</p>
-                  <h5 className="font-size-14">{t("Patricia Smith")}</h5>
+                  <h5 className="font-size-14">{t(profile.firstName+" "+profile.lastName)}</h5>
                 </div>
 
                 <div className="mt-4">
                   <p className="text-muted mb-1">{t("Email")}</p>
-                  <h5 className="font-size-14">{t("adc@123.com")}</h5>
+                  <h5 className="font-size-14">{t(profile.email)}</h5>
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-muted mb-1">{t("Time")}</p>
-                  <h5 className="font-size-14">{t("11:40 AM")}</h5>
+                  <p className="text-muted mb-1">{t("Phone Number")}</p>
+                  <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
                 </div>
 
                 <div className="mt-4">
@@ -144,6 +168,8 @@ function Profile(props) {
         </div>
         {/* end user-profile-desc  */}
       </div>
+              }
+              </>
   );
 }
 

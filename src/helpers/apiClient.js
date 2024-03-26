@@ -1,14 +1,28 @@
 import axios from 'axios';
-import config from "./../config";
+// import config from "./../config";
 
 
 // default
-axios.defaults.baseURL = config.API_URL;
-
+axios.defaults.baseURL = "http://10.10.1.75:3004/";
+const baseURL = "http://10.10.1.75:3004/";
+const token = localStorage.getItem["api-access-token"]?localStorage.getItem["api-access-token"]:""
 // content type
-axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+axios.interceptors.request.use(
+    config => {
+		if (localStorage.getItem["api-access-token"]) { 
+			config.headers["api-access-token"] = localStorage.getItem["api-access-token"];
+		}
+		console.log(config);
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    });
 
 // intercepting to capture errors
+
 axios.interceptors.response.use(function (response) {
     return response.data ? response.data : response;
 }, function (error) {
@@ -35,9 +49,38 @@ const setAuthorization = (token) => {
 class APIClient {
     /**
      * Fetches data from given url
-     */
-    get = (url, params) => {
-        return axios.get(url, params);
+
+    */
+
+    
+
+    fetch=async (url,paramObj={})=>{
+        try{
+           
+            const res = await this.fetch(`${baseURL}/url`,{
+                method:"GET",
+                headers: {
+                    'Content-type': "application/json",
+                    'api-access-token': token }
+            })
+            // const response  = await
+        }catch(err){
+            console.log("error",err)
+
+        }
+    }
+
+    get = async (url, params={}) => {
+        console.log("testing in apiclient ",url,params)
+    try{
+
+        console.log("default is ",await axios.get(url))
+        const res = await axios.get(url, params)
+        console.log("resondv",res)
+    }catch(err){
+        console.log("Erro roisvr ",err)
+    }
+    
     }
 
     /**

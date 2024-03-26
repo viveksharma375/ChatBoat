@@ -29,6 +29,7 @@ import { loginUser, apiError } from "../../redux/actions";
 //Import Images
 import logodark from "../../assets/images/logo-dark.png";
 import logolight from "../../assets/images/logo-light.png";
+import { GoogleLogin } from "@react-oauth/google";
 
 /**
  * Login component
@@ -47,11 +48,19 @@ const Login = (props) => {
     clearError();
   }, [clearError]);
 
+
+  const responseMessage = (response) => {
+    console.log(response);
+};
+const errorMessage = (error) => {
+    console.log(error);
+};
+
   // validation
   const formik = useFormik({
     initialValues: {
-      phoneNumberOrEmail: "",
-      password: "",
+      phoneNumberOrEmail: "kk@gmail.com",
+      password: "Admin@123",
     },
     validationSchema: Yup.object({
       phoneNumberOrEmail: Yup.string().required(
@@ -198,6 +207,18 @@ const Login = (props) => {
                 </CardBody>
               </Card>
 
+              <div className="border-top border-dark w-100 py-3 ">
+                <div className="d-flex justify-content-center mt-2">Or</div>
+                <div className="footer d-flex justify-content-evenly align-items-center mt-5 padding">
+                  <div>
+                    <GoogleLogin
+                      onSuccess={responseMessage}
+                      onError={errorMessage}
+                    />
+                  </div>
+                  <div>facebook</div>
+                </div>
+              </div>
               <div className="mt-5 text-center">
                 <p>
                   {t("Don't have an account")} ?{" "}

@@ -20,8 +20,10 @@ import {
     logoutUserSuccess
 } from './actions';
 import axios from 'axios';
+import API from '../../helpers/api';
+import { socket } from '../../helpers/socket';
 
-
+const apiInstance = new API();
 //Initilize firebase
 const fireBaseBackend = getFirebaseBackend();
 
@@ -42,6 +44,7 @@ function* login({ payload: { username, password, history } }) {
         phoneNumberOrEmail: username,
         password: password
     }
+    let bodyValue = JSON.stringify(data);
  
     try {
         console.log("data", data)
@@ -54,16 +57,48 @@ function* login({ payload: { username, password, history } }) {
         })
         // console.log("response is", response)
         let responsedata = yield response.json()
-        console.log("respnse", responsedata.data.result.token)
+        console.log("respnse", responsedata)
+        if(responsedata.status===200){
+            console.log("this pryti")
         yield put(loginUserSuccess(responsedata.data.result.token));
-        localStorage.setItem("authUser",JSON.stringify(responsedata.data.result.token))
+        localStorage.setItem("api-access-token",responsedata.data.result.token)
+        
+        const response = yield apiInstance.getWithToken("/user/email", responsedata.data.result.token)
+        if (response.status) {
+            
+            console.log("dfnosifjvsprjgvsr",response.message.data)
+            
+            const profileData = response.message.data;
+            console.log("profile dats ",profileData)
+        
+            localStorage.setItem("authUser",JSON.stringify(profileData))
+        }
+
 
 
         history('/dashboard');
+        }
     } catch (error) {
         yield put(apiError(error));
         console.log("error in ", error)
     }
+
+    // try{
+
+    //     console.log("we are in Login APi")
+
+    //     const response = yield call(create,"v1/user/login",bodyValue);
+    //     yield put(loginUserSuccess(response));
+    //     let responsedata= yield response.json()
+    //     console.log("This is response in login ", response)
+    //     localStorage.setItem("api-access-token",responsedata.data.result.token)
+    //     localStorage.setItem("authUser",JSON.stringify({username,password}))
+
+    // }
+    // catch(error){
+    //     yield put(apiError(error));
+    //     console.log("Error in Login API",error)
+    // }
 }
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Card, Button, UncontrolledDropdown, Input, Label } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,8 @@ function Settings(props) {
     const [isOpen2, setIsOpen2] = useState(false);
     const [isOpen3, setIsOpen3] = useState(false);
     const [isOpen4, setIsOpen4] = useState(false);
-
+    const [profile, setProfile] = useState(false);
+    const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
     /* intilize t variable for multi language implementation */
     const { t } = useTranslation();
 
@@ -52,9 +53,28 @@ function Settings(props) {
     };
 
     const toggle = () => setDropdownOpen(!dropdownOpen);
+    const fetchDetails = async () => {
+        const response = await fetch('http://10.10.1.75:3004/v1/user/email/', {
+            method: "GET",
+            headers: {
+                'Content-type': "application/json",
+                'api-access-token': token
+            }
+        });
+
+        const responseData = await response.json();
+        const profileData = responseData.data.result.data;
+        console.log("profile dats ", profileData)
+        setProfile(profileData)
+    }
+
+    useEffect(() => {
+        fetchDetails();
+    }, [])
 
     return (
-            <div>
+        <>
+            {profile && <div>
                 <div className="px-4 pt-4">
                     <h4 className="mb-0">{t('Settings')}</h4>
                 </div>
@@ -68,7 +88,7 @@ function Settings(props) {
 
                     </div>
 
-                    <h5 className="font-size-16 mb-1 text-truncate">{t('Patricia Smith')}</h5>
+                    <h5 className="font-size-16 mb-1 text-truncate">{t(profile.firstName + " " +profile.lastName)}</h5>
                     <Dropdown isOpen={dropdownOpen} toggle={toggle} className="d-inline-block mb-1">
                         <DropdownToggle tag="a" className="text-muted pb-1 d-block" >
                             {t('Available')} <i className="mdi mdi-chevron-down"></i>
@@ -98,18 +118,22 @@ function Settings(props) {
                                 </div>
 
                                 <div>
-                                    <p className="text-muted mb-1">{t('Name')}</p>
-                                    <h5 className="font-size-14">{t('Patricia Smith')}</h5>
+                                    <p className="text-muted mb-1">{t('FirstName')}</p>
+                                    <h5 className="font-size-14">{t(profile.firstName)}</h5>
+                                </div>
+                                <div>
+                                    <p className="text-muted mb-1">{t('Last Name')}</p>
+                                    <h5 className="font-size-14">{t(profile.lastName)}</h5>
                                 </div>
 
                                 <div className="mt-4">
                                     <p className="text-muted mb-1">{t('Email')}</p>
-                                    <h5 className="font-size-14">{t('adc@123.com')}</h5>
+                                    <h5 className="font-size-14">{t(profile.email)}</h5>
                                 </div>
 
                                 <div className="mt-4">
-                                    <p className="text-muted mb-1">{t('Time')}</p>
-                                    <h5 className="font-size-14">{t('11:40 AM')}</h5>
+                                    <p className="text-muted mb-1">{t('Phone Number')}</p>
+                                    <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
                                 </div>
 
                                 <div className="mt-4">
@@ -265,7 +289,9 @@ function Settings(props) {
                     {/* end profile-setting-accordion */}
                 </SimpleBar>
                 {/* End User profile description */}
-            </div>
+            </div>}
+        </>
+
     );
 }
 

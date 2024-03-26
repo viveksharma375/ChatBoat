@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 //carousel
@@ -10,12 +10,24 @@ import avatar2 from "../../../assets/images/users/avatar-2.jpg";
 import avatar4 from "../../../assets/images/users/avatar-4.jpg";
 import avatar5 from "../../../assets/images/users/avatar-5.jpg";
 import avatar6 from "../../../assets/images/users/avatar-6.jpg";
+import { socket } from "../../../helpers/socket";
 
 const OnlineUsers = () => {
   const responsive = {
     0: { items: 4 },
     1024: { items: 4 },
   };
+  useEffect(()=>{
+    console.log("sfoisrepfsrhfposir")
+    function broadCastOnline(data){
+      console.log("userStatusUpdatesf ",data)
+    }
+    socket.on("userStatusUpdate", broadCastOnline)
+    return()=>{
+      socket.off("userStatusUpdate",broadCastOnline)
+    }
+  },[])
+
   return (
     <React.Fragment>
       {/* Start user status */}

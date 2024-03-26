@@ -1,24 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 //Import Components
 import ChatLeftSidebar from "./ChatLeftSidebar";
 import UserChat from "./UserChat/";
 
 import { connect } from "react-redux";
+import API from '../../helpers/api';
+import { socket } from '../../helpers/socket';
 
-class Index extends Component {
-    render() {
-
+const  Index=({users}) => {
+     console.log("userownefosborf",users)
         return (
             <React.Fragment>
                 {/* chat left sidebar */}
-                <ChatLeftSidebar recentChatList={this.props.users} />
+                <ChatLeftSidebar recentChatList={users} />
 
                 {/* user chat */}
-                <UserChat recentChatList={this.props.users} />
+                <UserChat recentChatList={users} />
 
             </React.Fragment>
         );
-    }
+    
 }
 
 const mapStateToProps = (state) => {

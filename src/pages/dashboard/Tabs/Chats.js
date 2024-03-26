@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Input, InputGroup } from "reactstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -15,111 +15,175 @@ import {
 //components
 import OnlineUsers from "./OnlineUsers";
 
-class Chats extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchChat: "",
-      recentChatList: this.props.recentChatList,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.openUserChat = this.openUserChat.bind(this);
-  }
+const Chats=({ recentChatList, active_user, setconversationNameInOpenChat, activeUser })=>{
+  const [searchChat, setSearchChat] = useState("");
+  const [filteredChatList, setFilteredChatList] = useState(recentChatList);
 
-  componentDidMount() {
-    var li = document.getElementById("conversation" + this.props.active_user);
+  useEffect(() => {
+    var li = document.getElementById("conversation" + active_user);
     if (li) {
       li.classList.add("active");
     }
-  }
+  }, [active_user]);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({
-        recentChatList: this.props.recentChatList,
-      });
+  useEffect(() => {
+    setFilteredChatList(recentChatList);
+  }, [recentChatList]);
+
+  const handleChange = (e) => {
+    setSearchChat(e.target.value);
+    const search = e.target.value.toLowerCase();
+    const filteredArray = recentChatList.filter((element) => 
+      element.name.toLowerCase().includes(search) ||
+      element.name.toUpperCase().includes(search)
+    );
+    setFilteredChatList(filteredArray);
+    if (search === "") {
+      setFilteredChatList(recentChatList);
     }
-  }
+  };
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.recentChatList !== nextProps.recentChatList) {
-      this.setState({
-        recentChatList: nextProps.recentChatList,
-      });
-    }
-  }
-
-  handleChange(e) {
-    this.setState({ searchChat: e.target.value });
-    var search = e.target.value;
-    let conversation = this.state.recentChatList;
-    let filteredArray = [];
-
-    //find conversation name from array
-    for (const element of conversation) {
-      if (
-        element.name.toLowerCase().includes(search) ||
-        element.name.toUpperCase().includes(search)
-      )
-        filteredArray.push(element);
-    }
-
-    //set filtered items to state
-    this.setState({ recentChatList: filteredArray });
-
-    //if input value is blanck then assign whole recent chatlist to array
-    if (search === "")
-      this.setState({ recentChatList: this.props.recentChatList });
-  }
-
-  openUserChat(e, chat) {
+  const openUserChat = (e, chat) => {
     e.preventDefault();
-
-    //find index of current chat in array
-    let index = this.props.recentChatList.indexOf(chat);
-
-    // set activeUser
-    this.props.activeUser(index);
-
-    let chatList = document.getElementById("chat-list");
-    let clickedItem = e.target;
+    const index = recentChatList.indexOf(chat);
+    activeUser(index);
+    const chatList = document.getElementById("chat-list");
     let currentli = null;
 
     if (chatList) {
-      let li = chatList.getElementsByTagName("li");
-      //remove coversation user
+      const li = chatList.getElementsByTagName("li");
       for (const element of li) {
         if (element.classList.contains("active")) {
           element.classList.remove("active");
         }
       }
-      //find clicked coversation user
       for (const element of li) {
-        if (element.contains(clickedItem)) {
+        if (element.contains(e.target)) {
           currentli = element;
           break;
         }
       }
     }
 
-    //activation of clicked coversation user
     if (currentli) {
       currentli.classList.add("active");
     }
 
-    let userChat = document.getElementsByClassName("user-chat");
+    const userChat = document.getElementsByClassName("user-chat");
     if (userChat) {
       userChat[0].classList.add("user-chat-show");
     }
 
-    //removes unread badge if user clicks
-    let unread = document.getElementById("unRead" + chat.id);
+    const unread = document.getElementById("unRead" + chat.id);
     if (unread) {
       unread.style.display = "none";
     }
-  }
+  };
 
-  render() {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     searchChat: "",
+  //     recentChatList: this.props.recentChatList,
+  //   };
+  //   this.handleChange = this.handleChange.bind(this);
+  //   this.openUserChat = this.openUserChat.bind(this);
+  // }
+
+  // componentDidMount() {
+  //   var li = document.getElementById("conversation" + this.props.active_user);
+  //   if (li) {
+  //     li.classList.add("active");
+  //   }
+  // }
+
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps !== this.props) {
+  //     this.setState({
+  //       recentChatList: this.props.recentChatList,
+  //     });
+  //   }
+  // }
+
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.recentChatList !== nextProps.recentChatList) {
+  //     this.setState({
+  //       recentChatList: nextProps.recentChatList,
+  //     });
+  //   }
+  // }
+
+  // handleChange(e) {
+  //   this.setState({ searchChat: e.target.value });
+  //   var search = e.target.value;
+  //   let conversation = this.state.recentChatList;
+  //   let filteredArray = [];
+
+  //   //find conversation name from array
+  //   for (const element of conversation) {
+  //     if (
+  //       element.name.toLowerCase().includes(search) ||
+  //       element.name.toUpperCase().includes(search)
+  //     )
+  //       filteredArray.push(element);
+  //   }
+
+  //   //set filtered items to state
+  //   this.setState({ recentChatList: filteredArray });
+
+  //   //if input value is blanck then assign whole recent chatlist to array
+  //   if (search === "")
+  //     this.setState({ recentChatList: this.props.recentChatList });
+  // }
+
+  // openUserChat(e, chat) {
+  //   e.preventDefault();
+
+  //   //find index of current chat in array
+  //   let index = this.props.recentChatList.indexOf(chat);
+
+  //   // set activeUser
+  //   this.props.activeUser(index);
+
+  //   let chatList = document.getElementById("chat-list");
+  //   let clickedItem = e.target;
+  //   let currentli = null;
+
+  //   if (chatList) {
+  //     let li = chatList.getElementsByTagName("li");
+  //     //remove coversation user
+  //     for (const element of li) {
+  //       if (element.classList.contains("active")) {
+  //         element.classList.remove("active");
+  //       }
+  //     }
+  //     //find clicked coversation user
+  //     for (const element of li) {
+  //       if (element.contains(clickedItem)) {
+  //         currentli = element;
+  //         break;
+  //       }
+  //     }
+  //   }
+
+  //   //activation of clicked coversation user
+  //   if (currentli) {
+  //     currentli.classList.add("active");
+  //   }
+
+  //   let userChat = document.getElementsByClassName("user-chat");
+  //   if (userChat) {
+  //     userChat[0].classList.add("user-chat-show");
+  //   }
+
+  //   //removes unread badge if user clicks
+  //   let unread = document.getElementById("unRead" + chat.id);
+  //   if (unread) {
+  //     unread.style.display = "none";
+  //   }
+  // }
+
+  
     return (
     
         <div>
@@ -135,8 +199,8 @@ class Chats extends Component {
                 </span>
                 <Input
                   type="text"
-                  value={this.state.searchChat}
-                  onChange={(e) => this.handleChange(e)}
+                  value={searchChat}
+                  onChange={(e) => handleChange(e)}
                   className="form-control bg-light"
                   placeholder="Search messages or users"
                 />
@@ -155,11 +219,12 @@ class Chats extends Component {
               style={{ maxHeight: "100%" }}
               className="chat-message-list"
             >
+            
               <ul
                 className="list-unstyled chat-list chat-user-list"
                 id="chat-list"
               >
-                {this.state.recentChatList.map((chat, key) => (
+                {recentChatList.map((chat, key) => (
                   <li
                     key={key}
                     id={"conversation" + key}
@@ -168,12 +233,12 @@ class Chats extends Component {
                         ? "unread"
                         : chat.isTyping
                         ? "typing"
-                        : key === this.props.active_user
+                        : key === active_user
                         ? "active"
                         : ""
                     }
                   >
-                    <Link to="#" onClick={(e) => this.openUserChat(e, chat)}>
+                    <Link to="#" onClick={(e) => openUserChat(e, chat)}>
                       <div className="d-flex">
                         {chat.profilePicture === "Null" ? (
                           <div
@@ -278,7 +343,7 @@ class Chats extends Component {
           {/* End chat-message-list */}
         </div>
     );
-  }
+  
 }
 
 const mapStateToProps = (state) => {
