@@ -66,7 +66,6 @@ function* login({ payload: { username, password, history } }) {
         const response = yield apiInstance.getWithToken("/user/email", responsedata.data.result.token)
         if (response.status) {
             
-            console.log("dfnosifjvsprjgvsr",response.message.data)
             
             const profileData = response.message.data;
             console.log("profile dats ",profileData)

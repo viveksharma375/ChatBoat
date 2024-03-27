@@ -4,7 +4,6 @@ import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from
 export default class ContactTab extends Component {
   render() {
     const { keys, contact,t } = this.props; 
-    console.log("contact is ",contact)
     return (
       
         <div key={keys} className={keys + 1 === 1 ? "" : "mt-3"}>

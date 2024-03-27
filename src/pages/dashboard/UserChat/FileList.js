@@ -11,8 +11,7 @@ function FileList(props) {
     const { t } = useTranslation();
 
     return (
-        <React.Fragment>
-            <Card className="p-2 mb-2">
+        <Card className="p-2 mb-2">
                 <div className="d-flex align-items-center">
                     <div className="avatar-sm me-3 ms-0">
                         <div className="avatar-title bg-soft-primary text-primary rounded font-size-20">
@@ -46,7 +45,6 @@ function FileList(props) {
                     </div>
                 </div>
             </Card>
-        </React.Fragment>
     );
 }
 

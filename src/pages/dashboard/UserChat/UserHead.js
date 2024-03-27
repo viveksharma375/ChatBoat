@@ -73,23 +73,17 @@ function UserHead(props) {
                                         switch (props.users[props.active_user].status) {
                                             case "online":
                                                 return (
-                                                    <>
-                                                        <i className="ri-record-circle-fill font-size-10 text-success d-inline-block ms-1"></i>
-                                                    </>
+                                                    <i className="ri-record-circle-fill font-size-10 text-success d-inline-block ms-1"></i>
                                                 )
 
                                             case "away":
                                                 return (
-                                                    <>
-                                                        <i className="ri-record-circle-fill font-size-10 text-warning d-inline-block ms-1"></i>
-                                                    </>
+                                                    <i className="ri-record-circle-fill font-size-10 text-warning d-inline-block ms-1"></i>
                                                 )
 
                                             case "offline":
                                                 return (
-                                                    <>
-                                                        <i className="ri-record-circle-fill font-size-10 text-secondary d-inline-block ms-1"></i>
-                                                    </>
+                                                    <i className="ri-record-circle-fill font-size-10 text-secondary d-inline-block ms-1"></i>
                                                 )
 
                                             default:

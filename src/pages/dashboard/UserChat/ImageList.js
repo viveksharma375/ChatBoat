@@ -28,8 +28,7 @@ function ImageList(props) {
   };
 
   return (
-    <React.Fragment>
-      <ul className="list-inline message-img  mb-0">
+    <ul className="list-inline message-img  mb-0">
         {/* image list */}
         {images.map((imgMsg, key) => (
           <li key={key} className="list-inline-item message-img-list">
@@ -86,7 +85,6 @@ function ImageList(props) {
           />
         )}
       </ul>
-    </React.Fragment>
   );
 }
 

@@ -1,13 +1,11 @@
-import React, { Component, useEffect, useState } from 'react';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, Modal, ModalHeader, ModalBody, ModalFooter, UncontrolledTooltip, Form, Label, Input, InputGroup, } from 'reactstrap';
+import React, {  useEffect, useState } from 'react';
+import {  Button, UncontrolledTooltip, Input, InputGroup, } from 'reactstrap';
 import SimpleBar from "simplebar-react";
 
-import { connect } from "react-redux";
 
 import { withTranslation } from 'react-i18next';
 import ContactTab from '../../../components/ContactTab';
 import AddContactModal from '../../../components/AddContactModal';
-import axios from 'axios';
 
 import { APIClient } from '../../../helpers/apiClient';
 import API from '../../../helpers/api';
@@ -23,13 +21,14 @@ let sortedContacts = [
 const Contacts = ({ t }) => {
     const [modal, setModal] = useState(false);
     const [contacts, setContacts] = useState([]);
+    const [allcontacts, setFetchContacts] = useState([]);
+    const [searchValue, setSearchValue] = useState("")
     const token = localStorage.getItem("api-access-token")
     const toggle = () => {
         setModal(!modal);
     };
     const data = JSON.parse(localStorage.getItem("authUser"))
-    console.log("data isssssss",data )
-    const apiClient = new APIClient();
+    
     const apiInstance = new API();
     const fetchContacts = async () => {
 
@@ -41,10 +40,20 @@ const Contacts = ({ t }) => {
             const sortedContacts = contactsData.sort((a, b) => {
                 return a.firstName.localeCompare(b.firstName);
             });
+
+
             // console.log("sortedcontacts ",sortedContacts)
-            setContacts(sortedContacts);
+            setFetchContacts(sortedContacts);
             sortContact(sortedContacts);
         }
+    }
+
+    const searchContacts = () => {
+        const filteredContacts = allcontacts
+            ?.filter(item =>
+                item.firstName?.toLowerCase().includes(searchValue.toLowerCase())
+            );
+        sortContact(filteredContacts)
     }
 
 
@@ -52,11 +61,20 @@ const Contacts = ({ t }) => {
 
     useEffect(() => {
         fetchContacts();
-        if(data.id){
-            console.log("insdinwr ")
-            socket.emit("login",data.id)
+        if (data.id) {
+            socket.emit("login", data.id)
         }
+        return () => {
+            socket.off("login", data.id)
+        }
+
     }, []);
+
+
+
+    useEffect(() => {
+        searchContacts();
+    }, [searchValue])
 
     const sortContact = (contactsData) => {
         let data = contactsData.reduce((r, e) => {
@@ -104,7 +122,7 @@ const Contacts = ({ t }) => {
                         <Button color="link" className="text-decoration-none text-muted pr-1" type="button">
                             <i className="ri-search-line search-icon font-size-18"></i>
                         </Button>
-                        <Input type="text" className="form-control bg-light " placeholder={t('Search users..')} />
+                        <Input type="text" className="form-control bg-light " placeholder={t('Search users..')} onChange={(e) => setSearchValue(e.target.value)} />
                     </InputGroup>
                 </div>
                 {/* End search-box */}
@@ -115,7 +133,7 @@ const Contacts = ({ t }) => {
             <SimpleBar style={{ maxHeight: "100%" }} id="chat-room" className="p-4 chat-message-list chat-group-list">
 
                 {
-                    sortedContacts.map((contact, key) =>
+                    contacts.map((contact, key) =>
                         <ContactTab keys={key} contact={contact} t={t} />
                     )
                 }

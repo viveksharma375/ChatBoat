@@ -53,7 +53,6 @@ function Profile(props) {
     const response = await apiInstance.getWithToken("/user/email", token)
         if (response.status) {
             
-            console.log("dfnosifjvsprjgvsr",response.message.data)
             
             const profileData = response.message.data;;
             console.log("profile dats ",profileData)

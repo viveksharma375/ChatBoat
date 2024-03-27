@@ -1,8 +1,8 @@
 // api.js
-
+import config from "./../config";
 class API {
-    constructor(baseURL) {
-      this.baseURL = "http://10.10.1.75:3004/v1";
+    constructor() {
+      this.baseURL = config.API_URL;
     }
   
     // Function to handle errors
@@ -66,10 +66,10 @@ class API {
     }
   
     // Function to make a PUT request
-    async put(endpoint, data) {
+    async patch(endpoint, data) {
       try {
         const response = await fetch(this.baseURL + endpoint, {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -100,88 +100,3 @@ class API {
   
   export default API;
   
-
-// // Function to handle errors
-// const handleErrors = (response) => {
-//   if (!response.ok) {
-//     throw Error(response.statusText);
-//   }
-//   return response;
-// };
-
-// // Function to make a GET request
-// export const get = async (endpoint) => {
-//   try {
-//     const response = await fetch(baseURL + endpoint);
-//     handleErrors(response);
-//     return response.json();
-//   } catch (error) {
-//     console.error("Error during GET request:", error);
-//     throw error;
-//   }
-// };
-
-// export const getWithToken = async (endpoint, token) => {
-//     try {
-//       const response = await fetch(baseURL + endpoint, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-//       handleErrors(response);
-//       return response.json();
-//     } catch (error) {
-//       console.error("Error during GET request with token:", error);
-//       throw error;
-//     }
-//   };
-
-// // Function to make a POST request
-// export const post = async (endpoint, data) => {
-//   try {
-//     const response = await fetch(baseURL + endpoint, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(data),
-//     });
-//     handleErrors(response);
-//     return response.json();
-//   } catch (error) {
-//     console.error("Error during POST request:", error);
-//     throw error;
-//   }
-// };
-
-// // Function to make a PUT request
-// export const put = async (endpoint, data) => {
-//   try {
-//     const response = await fetch(baseURL + endpoint, {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(data),
-//     });
-//     handleErrors(response);
-//     return response.json();
-//   } catch (error) {
-//     console.error("Error during PUT request:", error);
-//     throw error;
-//   }
-// };
-
-// // Function to make a DELETE request
-// export const remove = async (endpoint) => {
-//   try {
-//     const response = await fetch(baseURL + endpoint, {
-//       method: "DELETE",
-//     });
-//     handleErrors(response);
-//     return response.json();
-//   } catch (error) {
-//     console.error("Error during DELETE request:", error);
-//     throw error;
-//   }
-// };

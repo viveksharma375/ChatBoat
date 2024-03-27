@@ -12,6 +12,7 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 //i18n
 import { useTranslation } from 'react-i18next';
+import API from '../../../helpers/api';
 
 function Settings(props) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -21,6 +22,7 @@ function Settings(props) {
     const [isOpen4, setIsOpen4] = useState(false);
     const [profile, setProfile] = useState(false);
     const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
+    const apiInstance = new API();
     /* intilize t variable for multi language implementation */
     const { t } = useTranslation();
 
@@ -54,18 +56,14 @@ function Settings(props) {
 
     const toggle = () => setDropdownOpen(!dropdownOpen);
     const fetchDetails = async () => {
-        const response = await fetch('http://10.10.1.75:3004/v1/user/email/', {
-            method: "GET",
-            headers: {
-                'Content-type': "application/json",
-                'api-access-token': token
-            }
-        });
+        const response = await apiInstance.getWithToken("/user/email", token)
+        if (response.status) {
 
-        const responseData = await response.json();
-        const profileData = responseData.data.result.data;
+        
+        const profileData = response.message.data;
         console.log("profile dats ", profileData)
         setProfile(profileData)
+        }
     }
 
     useEffect(() => {
