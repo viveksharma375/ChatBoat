@@ -19,7 +19,7 @@ import ChatItem from "../../../components/chatItem";
 const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, activeUser }) => {
   const [searchChat, setSearchChat] = useState("");
   const [filteredChatList, setFilteredChatList] = useState(recentChatList);
-
+  console.log("Recentchat list ",recentChatList)
   useEffect(() => {
     var li = document.getElementById("conversation" + active_user);
     if (li) {
@@ -31,6 +31,7 @@ const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, act
     setFilteredChatList(recentChatList);
   }, [recentChatList]);
 
+  
   const handleChange = (e) => {
     setSearchChat(e.target.value);
     const search = e.target.value.toLowerCase();

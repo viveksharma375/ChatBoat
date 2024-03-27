@@ -11,52 +11,61 @@ import Contacts from "./Tabs/Contacts";
 import Settings from "./Tabs/Settings";
 
 function ChatLeftSidebar(props) {
-    console.log("spoejfpshfpoijjofijfffffffffffffffffff",props)
+    console.log("spoejfpshfpoijjofijfffffffffffffffffff", props)
     const activeTab = props.activeTab;
 
     return (
         <div className="chat-leftsidebar me-lg-1">
-               
-                <TabContent activeTab={activeTab}>
-                    {/* Start Profile tab-pane */}
-                    <TabPane tabId="profile" id="pills-user">
-                        {/* profile content  */}
-                      
-                        <Profile />
-                    </TabPane>
-                    {/* End Profile tab-pane  */}
 
-                    {/* Start chats tab-pane  */}
-                    <TabPane tabId="chat" id="pills-chat">
-                        {/* chats content */}
-                        <Chats recentChatList={props.recentChatList} />
-                    </TabPane>
-                    {/* End chats tab-pane */}
+            <TabContent activeTab={activeTab}>
+                {/* Start Profile tab-pane */}
+                <TabPane tabId="profile" id="pills-user">
+                    {/* profile content  */}
 
-                    {/* Start groups tab-pane */}
-                    <TabPane tabId="group" id="pills-groups">
-                        {/* Groups content */}
-                        <Groups />
-                    </TabPane>
-                    {/* End groups tab-pane */}
+                    <Profile />
+                </TabPane>
+                {/* End Profile tab-pane  */}
 
-                    {/* Start contacts tab-pane */}
-                    <TabPane tabId="contacts" id="pills-contacts">
-                        {/* Contact content */}
-                        <Contacts />
-                    </TabPane>
-                    {/* End contacts tab-pane */}
+                {/* Start chats tab-pane  */}
+                <TabPane tabId="chat" id="pills-chat">
+                    {/* chats content */}
+                    <Chats recentChatList={props.recentChatList} />
+                </TabPane>
+                {/* End chats tab-pane */}
 
-                    {/* Start settings tab-pane */}
-                    <TabPane tabId="settings" id="pills-setting">
-                        {/* Settings content */}
-                        <Settings />
-                    </TabPane>
-                    {/* End settings tab-pane */}
-                </TabContent>
-                {/* end tab content */}
+                {/* Start groups tab-pane */}
+                <TabPane tabId="group" id="pills-groups">
+                    {/* Groups content */}
+                    <Groups />
+                </TabPane>
+                {/* End groups tab-pane */}
 
-            </div>
+                {/* Start contacts tab-pane */}
+                <TabPane tabId="contacts" id="pills-contacts">
+                    {/* Contact content */}
+                    <Contacts />
+                </TabPane>
+                {/* End contacts tab-pane */}
+
+
+                {/* Start notification tab-pane */}
+                <TabPane tabId="notification" id="pills-notification">
+                    {/* Settings content */}
+                    <Settings />
+                </TabPane>
+                {/* End notification tab-pane */}
+                {/* Start settings tab-pane */}
+                <TabPane tabId="settings" id="pills-setting">
+                    {/* Settings content */}
+                    <Settings />
+                </TabPane>
+                {/* End settings tab-pane */}
+
+
+            </TabContent>
+            {/* end tab content */}
+
+        </div>
     );
 }
 

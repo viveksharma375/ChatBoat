@@ -72,8 +72,7 @@ function LeftSidebarMenu(props) {
     }
 
     return (
-        <React.Fragment>
-            <div className="side-menu flex-lg-column me-lg-1">
+        <div className="side-menu flex-lg-column me-lg-1">
                 {/* LOGO */}
                 <div className="navbar-brand-box">
                     <Link to="/" className="logo logo-dark">
@@ -124,6 +123,14 @@ function LeftSidebarMenu(props) {
                         </NavItem>
                         <UncontrolledTooltip target="Contacts" placement="top">
                             Contacts
+                        </UncontrolledTooltip>
+                        <NavItem id="Notification">
+                            <NavLink id="pills-notification-tab" className={classnames({ active: activeTab === 'notification' })} onClick={() => { toggleTab('notification'); }}>
+                                <i className="ri-notification-2-line"></i>
+                            </NavLink>
+                        </NavItem>
+                        <UncontrolledTooltip target="Notification" placement="top">
+                            Notification
                         </UncontrolledTooltip>
                         <NavItem id="Settings">
                             <NavLink id="pills-setting-tab" className={classnames({ active: activeTab === 'settings' })} onClick={() => { toggleTab('settings'); }}>
@@ -199,7 +206,6 @@ function LeftSidebarMenu(props) {
                 </div>
                 {/* Side menu user */}
             </div>
-        </React.Fragment>
     );
 }
 
