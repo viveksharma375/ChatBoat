@@ -20,7 +20,9 @@ import germany from "../../assets/images/flags/germany.jpg";
 import italy from "../../assets/images/flags/italy.jpg";
 import russia from "../../assets/images/flags/russia.jpg";
 
-function LeftSidebarMenu(props) {
+const LeftSidebarMenu=(props)=> {
+
+    console.log("this i sppropaaaa", props)
     const dispatch = useDispatch();
     const { layoutMode } = useSelector(state => ({
         layoutMode: state.Layout.layoutMode,

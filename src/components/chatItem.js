@@ -1,17 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const ChatItem=({chat,key,active_user,openUserChat}) =>{
+const ChatItem=({chat,active_user,openUserChat}) =>{
+  console.log("rhia ia keyyy" , chat)
   return (
     <li
-    key={key}
-    id={"conversation" + key}
+    key={chat.id}
+    id={"conversation" + chat.id}
     className={
       chat.unRead
         ? "unread"
         : chat.isTyping
         ? "typing"
-        : key === active_user
+        : chat.id === active_user
         ? "active"
         : ""
     }

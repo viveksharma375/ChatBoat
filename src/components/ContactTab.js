@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
 
-export default class ContactTab extends Component {
-  render() {
-    const { keys, contact,t } = this.props; 
+const ContactTab=({ keys, contact,t })=> {
+
     return (
       
         <div key={keys} className={keys + 1 === 1 ? "" : "mt-3"}>
@@ -13,7 +12,7 @@ export default class ContactTab extends Component {
 
                                     <ul className="list-unstyled contact-list">
                                         {
-                                            contact.children.map((child, key) =>
+                                            contact.children.map((child) =>
                                                 <li key={child.id} >
                                                     <div className="d-flex align-items-center">
                                                         <div className="flex-grow-1">
@@ -39,4 +38,5 @@ export default class ContactTab extends Component {
      
     )
   }
-}
+
+  export default ContactTab;

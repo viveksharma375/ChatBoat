@@ -17,19 +17,24 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 //i18n
 import { useTranslation } from "react-i18next";
 import API from "../../../helpers/api";
-
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 function Profile(props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isOpen, setisOpen] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [currentImage, setcurrentImage] = useState(null);
+
+
   const [isOpen1, setIsOpen1] = useState(true);
   const [isOpen2, setIsOpen2] = useState(false);
-  const [profile,setProfile] = useState(null);
   const [files] = useState([
     { name: "Admin-A.zip", size: "12.5 MB", thumbnail: "ri-file-text-fill" },
     { name: "Image-1.jpg", size: "4.2 MB", thumbnail: "ri-image-fill" },
     { name: "Image-2.jpg", size: "3.1 MB", thumbnail: "ri-image-fill" },
     { name: "Landing-A.zip", size: "6.7 MB", thumbnail: "ri-file-text-fill" },
   ]);
-  const token = localStorage.getItem("api-access-token")?localStorage.getItem("api-access-token"):"";
+  const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
   const apiInstance = new API();
   /* intilize t variable for multi language implementation */
   const { t } = useTranslation();
@@ -46,129 +51,137 @@ function Profile(props) {
   };
 
   const toggle = () => setDropdownOpen(!dropdownOpen);
-  const fetchDetails=async ()=>{
-    // const data = JSON.parse(localStorage.getItem("authUser"));
+  const fetchDetails = async () => {
 
-    // setProfile(data)
     const response = await apiInstance.getWithToken("/user/email", token)
-        if (response.status) {
-            
-            
-            const profileData = response.message.data;;
-            console.log("profile dats ",profileData)
-            setProfile(profileData)
-        }
+    if (response.status) {
+
+
+      const profileData = response.message.data;;
+      console.log("profile dats ", profileData)
+      setProfile(profileData)
+
+      //TODO change this
+      if (profileData.profilePath) {
+        
+        
+        console.log("profilePathhhhhhhhh ",`${profileData.profilePath}`)
+        setcurrentImage(`${profileData.profilePath}`)
+      }
+    }
 
   }
-  useEffect(()=>{
+  const toggleLightbox = (currentImage) => {
+    setisOpen(!isOpen);
+  };
+  useEffect(() => {
     fetchDetails();
-  },[])
+  }, [])
 
   return (
     <>
-        {profile &&
-      <div>
-        <div className="px-4 pt-4">
-          <div className="user-chat-nav float-end">
-            <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-              <DropdownToggle
-                tag="a"
-                className="font-size-18 text-muted dropdown-toggle"
+      {profile &&
+        <div>
+          <div className="px-4 pt-4">
+
+            <h4 className="mb-0">{t("My Profile")}</h4>
+          </div>
+
+          <div className="text-center  p-4 border-bottom">
+            {currentImage ?
+              <div className="mb-4">
+                <img
+                  src={currentImage}
+
+                  className="rounded-circle avatar-lg img-thumbnail"
+                  alt={profile.firstName} 
+                  onClick={() => toggleLightbox(currentImage)}
+
+                />
+              </div>
+              :
+              <div
+                className={"mb-4 d-flex align-items-center justify-content-center"
+                }
               >
-                <i className="ri-more-2-fill"></i>
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-end">
-                <DropdownItem>{t("Edit")}</DropdownItem>
-                <DropdownItem>{t("Action")}</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>{t("Another action")}</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-          <h4 className="mb-0">{t("My Profile")}</h4>
-        </div>
+                <div className="avatar-lg d-flex align-items-center justify-content-center rounded-circle bg-soft-primary text-primary">
+                  {/* <span className="avatar-title rounded-circle bg-soft-primary text-primary"> */}
+                  {profile.firstName.charAt(0)}{profile.lastName.charAt(0)}
 
-        <div className="text-center p-4 border-bottom">
-          <div className="mb-4">
-            <img
-              src={avatar1}
-              className="rounded-circle avatar-lg img-thumbnail"
-              alt="chatvia"
-            />
-          </div>
+                  {/* </span> */}
+                </div>
 
-          <h5 className="font-size-16 mb-1 text-truncate">
-            {t(profile.firstName+" "+profile.lastName)}
-          </h5>
-          <p className="text-muted text-truncate mb-1">
-            <i className="ri-record-circle-fill font-size-10 text-success me-1 d-inline-block"></i>{" "}
-            {t("Active")}
-          </p>
-        </div>
-        {/* End profile user  */}
-        
-        {/* Start user-profile-desc */}
-        <div className="p-4 user-profile-desc">
-          <div className="text-muted">
-            <p className="mb-4">
-              {t(
-                (profile.about )? profile.about : "Hey!  I am using ChatMe"
-              )}
+              </div>
+            }
+
+            <h5 className="font-size-16 mb-1 text-truncate">
+              {t(profile.firstName + " " + profile.lastName)}
+            </h5>
+            <p className="text-muted text-truncate mb-1">
+              <i className="ri-record-circle-fill font-size-10 text-success me-1 d-inline-block"></i>{" "}
+              {t("Active")}
             </p>
           </div>
+          {/* End profile user  */}
 
-          <div id="profile-user-accordion-1" className="custom-accordion">
-            <Card className="shadow-none border mb-2">
-              {/* import collaps */}
-              <CustomCollapse
-                title="About"
-                iconClass="ri-user-2-line"
-                isOpen={isOpen1}
-                toggleCollapse={toggleCollapse1}
-              >
-                <div>
-                  <p className="text-muted mb-1">{t("Name")}</p>
-                  <h5 className="font-size-14">{t(profile.firstName+" "+profile.lastName)}</h5>
-                </div>
+          {/* Start user-profile-desc */}
+          <div className="p-4 user-profile-desc">
+            <div className="text-muted">
+              <p className="mb-4">
+                {t(
+                  (profile.about) ? profile.about : "Hey!  I am using ChatMe"
+                )}
+              </p>
+            </div>
 
-                <div className="mt-4">
-                  <p className="text-muted mb-1">{t("Email")}</p>
-                  <h5 className="font-size-14">{t(profile.email)}</h5>
-                </div>
+            <div id="profile-user-accordion-1" className="custom-accordion">
+              <Card className="shadow-none border mb-2">
+                {/* import collaps */}
+                <CustomCollapse
+                  title="About"
+                  iconClass="ri-user-2-line"
+                  isOpen={isOpen1}
+                  toggleCollapse={toggleCollapse1}
+                >
+                  <div>
+                    <p className="text-muted mb-1">{t("Name")}</p>
+                    <h5 className="font-size-14">{t(profile.firstName + " " + profile.lastName)}</h5>
+                  </div>
 
-                <div className="mt-4">
-                  <p className="text-muted mb-1">{t("Phone Number")}</p>
-                  <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
-                </div>
+                  <div className="mt-4">
+                    <p className="text-muted mb-1">{t("Email")}</p>
+                    <h5 className="font-size-14">{t(profile.email)}</h5>
+                  </div>
 
-                <div className="mt-4">
-                  <p className="text-muted mb-1">{t("Location")}</p>
-                  <h5 className="font-size-14 mb-0">{t("California, USA")}</h5>
-                </div>
-              </CustomCollapse>
-            </Card>
-            {/* End About card  */}
+                  <div className="mt-4">
+                    <p className="text-muted mb-1">{t("Phone Number")}</p>
+                    <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
+                  </div>
 
-            <Card className="mb-1 shadow-none border">
-              {/* import collaps */}
-              <CustomCollapse
-                title="Attached Files"
-                iconClass="ri-attachment-line"
-                isOpen={isOpen2}
-                toggleCollapse={toggleCollapse2}
-              >
-                {/* attached files */}
-                <AttachedFiles files={files} />
-              </CustomCollapse>
-            </Card>
-            {/* End Attached Files card  */}
+                  <div className="mt-4">
+                    <p className="text-muted mb-1">{t("Location")}</p>
+                    <h5 className="font-size-14 mb-0">{t("California, USA")}</h5>
+                  </div>
+                </CustomCollapse>
+              </Card>
+              {/* End About card  */}
+
+
+              {/* End Attached Files card  */}
+            </div>
+            {/* end profile-user-accordion  */}
           </div>
-          {/* end profile-user-accordion  */}
+          {/* end user-profile-desc  */}
+          {isOpen && currentImage && (
+            <Lightbox
+              mainSrc={currentImage}
+              onCloseRequest={toggleLightbox}
+              imageTitle="Project 1"
+            />
+          )}
         </div>
-        {/* end user-profile-desc  */}
-      </div>
-              }
-              </>
+      }
+    </>
   );
 }
 

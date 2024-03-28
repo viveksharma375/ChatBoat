@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Card, Button, UncontrolledDropdown, Input, Label } from "reactstrap";
+import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Card, Button, UncontrolledDropdown, Input, Label, Form } from "reactstrap";
 import { Link } from "react-router-dom";
 
 import SimpleBar from "simplebar-react";
@@ -9,18 +9,32 @@ import CustomCollapse from "../../../components/CustomCollapse";
 
 //Import Images
 import avatar1 from "../../../assets/images/users/avatar-1.jpg";
-
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 //i18n
 import { useTranslation } from 'react-i18next';
 import API from '../../../helpers/api';
 
 function Settings(props) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [isOpen, setisOpen] = useState(false);
+
     const [isOpen1, setIsOpen1] = useState(true);
     const [isOpen2, setIsOpen2] = useState(false);
     const [isOpen3, setIsOpen3] = useState(false);
     const [isOpen4, setIsOpen4] = useState(false);
     const [profile, setProfile] = useState(false);
+    const [currentImage, setcurrentImage] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [showBTN, setShowBTN] = useState(false)
+    const [showBTN2, setShowBTN2] = useState(false)
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        location: "California, USA"
+    });
     const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
     const apiInstance = new API();
     /* intilize t variable for multi language implementation */
@@ -55,17 +69,61 @@ function Settings(props) {
     };
 
     const toggle = () => setDropdownOpen(!dropdownOpen);
+    const handleFileChange = (e) => {
+        console.log("testiiiiiiiiiiiiiiiiiing", e.target.files[0])
+
+        setSelectedFile(e.target.files[0]);
+        setShowBTN(true)
+    };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        setShowBTN2(true); // Show the submit button when any input field is changed
+    };
+
+    const handleUpload = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        // const response = await fetch('http://10.10.1.75:3004/v1/user/uploadFile', {
+        //     method: 'POST',
+        //     headers: {
+        //         // Add any necessary headers here
+        //         'Authorization': `Bearer ${token}`,
+        //     },
+        //     body: formData,
+        // });
+        // Handle the response accordingly
+    };
+
+    const handleSubmit=async()=>{
+
+    }
+
     const fetchDetails = async () => {
         const response = await apiInstance.getWithToken("/user/email", token)
         if (response.status) {
 
-        
-        const profileData = response.message.data;
-        console.log("profile dats ", profileData)
-        setProfile(profileData)
+
+            const profileData = response.message.data;
+            console.log("profile dats ", profileData)
+            setProfile(profileData)
+            if (profileData.profilePath) {
+
+                setcurrentImage(profileData.profilePath)
+            }
+            setFormData({
+                firstName: profileData.firstName || "",
+                lastName: profileData.lastName || "",
+                email: profileData.email || "",
+                phoneNumber: profileData.phoneNumber || "",
+            });
         }
     }
 
+    const toggleLightbox = (currentImage) => {
+        setisOpen(!isOpen);
+    };
     useEffect(() => {
         fetchDetails();
     }, [])
@@ -79,14 +137,46 @@ function Settings(props) {
 
                 <div className="text-center border-bottom p-4">
                     <div className="mb-4 profile-user">
-                        <img src={avatar1} className="rounded-circle avatar-lg img-thumbnail" alt="chatvia" />
-                        <Button type="button" color="light" className="avatar-xs p-0 rounded-circle profile-photo-edit">
-                            <i className="ri-pencil-fill"></i>
-                        </Button>
+                        {currentImage ?
+                            <div className="">
+                                <img
+                                    src={currentImage}
+
+                                    className="rounded-circle avatar-lg img-thumbnail"
+                                    alt={profile.firstName}
+                                    onClick={() => toggleLightbox(currentImage)}
+
+                                />
+                            </div>
+                            :
+                            <div
+                                className={"d-flex align-items-center justify-content-center"
+                                }
+                            >
+                                <div className="avatar-lg d-flex align-items-center justify-content-center rounded-circle bg-soft-primary text-primary">
+                                    {/* <span className="avatar-title rounded-circle bg-soft-primary text-primary"> */}
+                                    {profile.firstName.charAt(0)}{profile.lastName.charAt(0)}
+
+                                    {/* </span> */}
+                                </div>
+
+                            </div>
+                        }
+
+
+                        {/* <Button type="button" color="light" className="avatar-xs p-0 align-items-center rounded-circle profile-photo-edit"> */}
+                        <Form onSubmit={(e) => handleUpload(e)}>
+                            <Label for="profilePicture" color="light" className="avatar-xs bg-light p-0 align-items-center rounded-circle profile-photo-edit">
+                                <i className="ri-pencil-fill"></i></Label>
+                            <Input id="profilePicture" onChange={(e) => handleFileChange(e)} type="file" name="fileInput" size="60" style={{ display: 'none' }} />
+                            <Button type="submit" className="avatar-xs  p-0 align-items-center "><i className='ri-upload-fill'></i></Button>
+                            {/* </Button> */}
+                        </Form>
+
 
                     </div>
 
-                    <h5 className="font-size-16 mb-1 text-truncate">{t(profile.firstName + " " +profile.lastName)}</h5>
+                    <h5 className="font-size-16 mb-1 text-truncate">{t(profile.firstName + " " + profile.lastName)}</h5>
                     <Dropdown isOpen={dropdownOpen} toggle={toggle} className="d-inline-block mb-1">
                         <DropdownToggle tag="a" className="text-muted pb-1 d-block" >
                             {t('Available')} <i className="mdi mdi-chevron-down"></i>
@@ -105,40 +195,42 @@ function Settings(props) {
 
                     <div id="profile-setting-accordion" className="custom-accordion">
                         <Card className="shadow-none border mb-2">
-                            <CustomCollapse
-                                title="Personal Info"
-                                isOpen={isOpen1}
-                                toggleCollapse={toggleCollapse1}
-                            >
+                            <Form onSubmit={handleSubmit}>
+                                <CustomCollapse
+                                    title="Personal Info"
+                                    isOpen={isOpen1}
+                                    toggleCollapse={toggleCollapse1}
+                                >
 
-                                <div className="float-end">
-                                    <Button color="light" size="sm" type="button" ><i className="ri-edit-fill me-1 align-middle"></i> {t('Edit')}</Button>
-                                </div>
+                                    <div className="float-end">
+                                        <Button color="light" size="sm" type="button" ><i className="ri-edit-fill me-1 align-middle"></i> {t('Edit')}</Button>
+                                    </div>
 
-                                <div>
-                                    <p className="text-muted mb-1">{t('FirstName')}</p>
-                                    <h5 className="font-size-14">{t(profile.firstName)}</h5>
-                                </div>
-                                <div>
-                                    <p className="text-muted mb-1">{t('Last Name')}</p>
-                                    <h5 className="font-size-14">{t(profile.lastName)}</h5>
-                                </div>
+                                    <div>
+                                        <p className="text-muted mb-1">{t('FirstName')}</p>
+                                        <h5 className="font-size-14">{t(profile.firstName)}</h5>
+                                    </div>
+                                    <div>
+                                        <p className="text-muted mb-1">{t('Last Name')}</p>
+                                        <h5 className="font-size-14">{t(profile.lastName)}</h5>
+                                    </div>
 
-                                <div className="mt-4">
-                                    <p className="text-muted mb-1">{t('Email')}</p>
-                                    <h5 className="font-size-14">{t(profile.email)}</h5>
-                                </div>
+                                    <div className="mt-4">
+                                        <p className="text-muted mb-1">{t('Email')}</p>
+                                        <h5 className="font-size-14">{t(profile.email)}</h5>
+                                    </div>
 
-                                <div className="mt-4">
-                                    <p className="text-muted mb-1">{t('Phone Number')}</p>
-                                    <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
-                                </div>
+                                    <div className="mt-4">
+                                        <p className="text-muted mb-1">{t('Phone Number')}</p>
+                                        <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
+                                    </div>
 
-                                <div className="mt-4">
-                                    <p className="text-muted mb-1">{t('Location')}</p>
-                                    <h5 className="font-size-14 mb-0">{t('California, USA')}</h5>
-                                </div>
-                            </CustomCollapse>
+                                    <div className="mt-4">
+                                        <p className="text-muted mb-1">{t('Location')}</p>
+                                        <h5 className="font-size-14 mb-0">{t('California, USA')}</h5>
+                                    </div>
+                                </CustomCollapse>
+                            </Form>
                         </Card>
                         {/* end profile card */}
 
@@ -287,6 +379,13 @@ function Settings(props) {
                     {/* end profile-setting-accordion */}
                 </SimpleBar>
                 {/* End User profile description */}
+                {isOpen && currentImage && (
+                    <Lightbox
+                        mainSrc={currentImage}
+                        onCloseRequest={toggleLightbox}
+                        imageTitle="Profile Picture"
+                    />
+                )}
             </div>}
         </>
 
