@@ -16,13 +16,16 @@ let sortedContacts = [
     }
 ]
 
-const ContactItems= ({ t,allcontacts }) => {
+const ContactItems= ({ t,allcontacts,setSelectedContacts,selectedContacts }) => {
     const [contacts, setContacts] = useState([]);
    
     const [searchValue, setSearchValue] = useState("")
    
   
-    
+    const handleContactSelection=(value)=>{
+        setSelectedContacts(value)
+       
+    }
 
     const searchContacts = () => {
         const filteredContacts = allcontacts
@@ -91,7 +94,7 @@ const ContactItems= ({ t,allcontacts }) => {
 
                 {
                     contacts.map((contact, key) =>
-                        <ContactComponent keys={key} contact={contact} t={t} />
+                        <ContactComponent keys={key} contact={contact} handleContactSelection={handleContactSelection} selectedContacts={selectedContacts} />
                     )
                 }
 

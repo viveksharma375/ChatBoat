@@ -38,3 +38,34 @@ File: Main Css File
 @import "custom/pages/user-profile-details";
 @import "custom/pages/authentication";
 
+
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .profile-picture {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .profile-image {
+    width: 150px; /* Adjust size as needed */
+    height: 150px; /* Adjust size as needed */
+    border-radius: 50%;
+  }
+  
+  .edit-button-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+  
+  .edit-button {
+    border-radius: 50%;
+    padding: 5px;
+    line-height: 0;
+  }
+
+  

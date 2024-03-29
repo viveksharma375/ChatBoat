@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Card, Button, UncontrolledDropdown, Input, Label, Form } from "reactstrap";
 import { Link } from "react-router-dom";
@@ -15,25 +17,26 @@ import "react-image-lightbox/style.css";
 import { useTranslation } from 'react-i18next';
 import API from '../../../helpers/api';
 
-function Settings(props) {
+const Settings = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [isOpen, setisOpen] = useState(false);
+    const [showBTN, setShowBTN] = useState(false)
+    const [currentImage, setcurrentImage] = useState(null);
+    const [selected, setSelectedFile] = useState(null);
 
     const [isOpen1, setIsOpen1] = useState(true);
     const [isOpen2, setIsOpen2] = useState(false);
     const [isOpen3, setIsOpen3] = useState(false);
     const [isOpen4, setIsOpen4] = useState(false);
     const [profile, setProfile] = useState(false);
-    const [currentImage, setcurrentImage] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [showBTN, setShowBTN] = useState(false)
     const [showBTN2, setShowBTN2] = useState(false)
+    const [toggleButton, setToggleButton] = useState(false)
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
         email: "",
         phoneNumber: "",
-        location: "California, USA"
+        about:"",
     });
     const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
     const apiInstance = new API();
@@ -69,35 +72,53 @@ function Settings(props) {
     };
 
     const toggle = () => setDropdownOpen(!dropdownOpen);
-    const handleFileChange = (e) => {
-        console.log("testiiiiiiiiiiiiiiiiiing", e.target.files[0])
+    const toggleEdit = () => setToggleButton(!toggleButton);
 
-        setSelectedFile(e.target.files[0]);
+    const handleFileChange = (e) => {
+        e.preventDefault();
+        console.log("testiiiiiiiiiiiiiiiiiing", e.target.files[0])
+        setcurrentImage(URL.createObjectURL(e.target.files[0]));
         setShowBTN(true)
+        setSelectedFile(e.target.files[0]);
     };
     const handleInputChange = (e) => {
+
         const { name, value } = e.target;
+        console.log("eeeeeeeeeeeeee",name,value)
         setFormData({ ...formData, [name]: value });
-        setShowBTN2(true); // Show the submit button when any input field is changed
     };
+    
 
     const handleUpload = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        // const response = await fetch('http://10.10.1.75:3004/v1/user/uploadFile', {
-        //     method: 'POST',
-        //     headers: {
-        //         // Add any necessary headers here
-        //         'Authorization': `Bearer ${token}`,
-        //     },
-        //     body: formData,
-        // });
-        // Handle the response accordingly
+        console.log("seleciendfovnfvn", selected, e)
+
+        e.preventDefault()
+        if (selected) {
+            console.log("inside thse handle a")
+            const formData = new FormData();
+            formData.append('profilePicture', selected);
+            console.log("formdatais f ", formData)
+            const response = await apiInstance.uploadFile("/user/uploadFile", formData, token)
+            if (response.status) {
+                setShowBTN(false);
+            }
+
+
+        } else {
+            console.log("ins soenfs pw")
+        }
     };
 
-    const handleSubmit=async()=>{
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("form dataaaaaaaaa",formData)
+        
+        const response = await apiInstance.patchWithToken("/user/update", formData, token)
+        if (response.status) {
+            console.log("responseeeeee",response)
+            toggleEdit()
+            
+        }
     }
 
     const fetchDetails = async () => {
@@ -117,6 +138,7 @@ function Settings(props) {
                 lastName: profileData.lastName || "",
                 email: profileData.email || "",
                 phoneNumber: profileData.phoneNumber || "",
+                about:profileData.about || "Hey there! I am using ChatMe",
             });
         }
     }
@@ -127,6 +149,12 @@ function Settings(props) {
     useEffect(() => {
         fetchDetails();
     }, [])
+
+    useEffect(() => {
+        console.log("selected=>>>>>>>>>>", selected)
+    }, [selected])
+
+
 
     return (
         <>
@@ -140,7 +168,7 @@ function Settings(props) {
                         {currentImage ?
                             <div className="">
                                 <img
-                                    src={currentImage}
+                                    src={selected ? URL.createObjectURL(selected) : currentImage}
 
                                     className="rounded-circle avatar-lg img-thumbnail"
                                     alt={profile.firstName}
@@ -165,13 +193,13 @@ function Settings(props) {
 
 
                         {/* <Button type="button" color="light" className="avatar-xs p-0 align-items-center rounded-circle profile-photo-edit"> */}
-                        <Form onSubmit={(e) => handleUpload(e)}>
-                            <Label for="profilePicture" color="light" className="avatar-xs bg-light p-0 align-items-center rounded-circle profile-photo-edit">
-                                <i className="ri-pencil-fill"></i></Label>
-                            <Input id="profilePicture" onChange={(e) => handleFileChange(e)} type="file" name="fileInput" size="60" style={{ display: 'none' }} />
-                            <Button type="submit" className="avatar-xs  p-0 align-items-center "><i className='ri-upload-fill'></i></Button>
-                            {/* </Button> */}
-                        </Form>
+                        {/* <Form onSubmit={handleUpload} encType="multipart/form-data"> */}
+                        <Label for="profilePicture" color="light" className="avatar-xs bg-light p-0 align-items-center rounded-circle profile-photo-edit">
+                            <i className="ri-pencil-fill"></i></Label>
+                        <input id="profilePicture" onChange={handleFileChange} type="file" accept="image/*" name="profilePicture" />
+                        {showBTN && <Button onClick={handleUpload} className="avatar-xs  p-0 align-items-center "><i className='ri-upload-fill'></i></Button>}
+                        {/* </Button> */}
+                        {/* </Form> */}
 
 
                     </div>
@@ -195,42 +223,47 @@ function Settings(props) {
 
                     <div id="profile-setting-accordion" className="custom-accordion">
                         <Card className="shadow-none border mb-2">
-                            <Form onSubmit={handleSubmit}>
+                            {/* <Form onSubmit={handleSubmit}> */}
                                 <CustomCollapse
                                     title="Personal Info"
                                     isOpen={isOpen1}
                                     toggleCollapse={toggleCollapse1}
                                 >
-
-                                    <div className="float-end">
-                                        <Button color="light" size="sm" type="button" ><i className="ri-edit-fill me-1 align-middle"></i> {t('Edit')}</Button>
-                                    </div>
-
+                                    {!toggleButton ?
+                                        <div className="float-end">
+                                            <Button onClick={toggleEdit} color="light" size="sm" type="button" ><i className="ri-edit-fill me-1 align-middle"></i> {t('Edit')}</Button>
+                                        </div>
+                                        :
+                                        <div className="float-end">
+                                            <Button  onClick={handleSubmit} color="light" size="sm" ><i className="ri-save-fill me-1 align-middle"></i> {t('Save')}</Button>
+                                        </div>
+                                    }
                                     <div>
                                         <p className="text-muted mb-1">{t('FirstName')}</p>
-                                        <h5 className="font-size-14">{t(profile.firstName)}</h5>
+                                        <Input type="text"  name="firstName" disabled={!toggleButton} onChange={handleInputChange} className="font-size-14" value={t(formData.firstName)}></Input >
                                     </div>
                                     <div>
                                         <p className="text-muted mb-1">{t('Last Name')}</p>
-                                        <h5 className="font-size-14">{t(profile.lastName)}</h5>
+                                        <Input type="text"  name="lastName" disabled={!toggleButton} onChange={handleInputChange} className="font-size-14" value={t(formData.lastName)}></Input >
                                     </div>
 
                                     <div className="mt-4">
                                         <p className="text-muted mb-1">{t('Email')}</p>
-                                        <h5 className="font-size-14">{t(profile.email)}</h5>
+                                        <Input type="text" name="email"  disabled={true} className="font-size-14" value={t(formData.email)}></Input >
                                     </div>
 
                                     <div className="mt-4">
                                         <p className="text-muted mb-1">{t('Phone Number')}</p>
-                                        <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
+                                        <Input type="text"  name="phoneNumber" disabled={true}  className="font-size-14" value={t(formData.phoneNumber)}></Input >
+                                    </div>
+                                    <div className="mt-4">
+                                        <p className="text-muted mb-1">{t('About')}</p>
+                                        <Input type="text"  name="about" disabled={!toggleButton}  onChange={handleInputChange} className="font-size-14" value={t(formData.about)}></Input >
                                     </div>
 
-                                    <div className="mt-4">
-                                        <p className="text-muted mb-1">{t('Location')}</p>
-                                        <h5 className="font-size-14 mb-0">{t('California, USA')}</h5>
-                                    </div>
+                                   
                                 </CustomCollapse>
-                            </Form>
+                            {/* </Form> */}
                         </Card>
                         {/* end profile card */}
 

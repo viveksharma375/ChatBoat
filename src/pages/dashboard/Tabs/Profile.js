@@ -129,7 +129,7 @@ function Profile(props) {
             <div className="text-muted">
               <p className="mb-4">
                 {t(
-                  (profile.about) ? profile.about : "Hey!  I am using ChatMe"
+                  (profile.about) ? profile.about : "Hey there! I am using ChatMe"
                 )}
               </p>
             </div>
@@ -158,10 +158,7 @@ function Profile(props) {
                     <h5 className="font-size-14">{t(profile.phoneNumber)}</h5>
                   </div>
 
-                  <div className="mt-4">
-                    <p className="text-muted mb-1">{t("Location")}</p>
-                    <h5 className="font-size-14 mb-0">{t("California, USA")}</h5>
-                  </div>
+                 
                 </CustomCollapse>
               </Card>
               {/* End About card  */}

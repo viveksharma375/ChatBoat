@@ -19,7 +19,7 @@ class API {
       try {
         const response = await fetch(this.baseURL + endpoint, {  method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "Content-type":"application/json",
         },
      });
         this.handleErrors(response);
@@ -35,7 +35,7 @@ class API {
             console.log("nsodifs v",this.baseURL+endpoint)
           const response = await fetch(this.baseURL + endpoint, {  method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            "Content-type":"application/json",
             "api-access-token":token,
           }, });
           this.handleErrors(response);
@@ -48,49 +48,97 @@ class API {
       }
   
     // Function to make a POST request
-    async post(endpoint, data) {
+    async post(endpoint, formdata) {
       try {
         const response = await fetch(this.baseURL + endpoint, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-type":"application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(formdata),
         });
         this.handleErrors(response);
-        return response.json();
+        const data = await response.json()
+          return {message: data.data.result,status :true};
       } catch (error) {
         console.error("Error during POST request:", error);
         throw error;
       }
     }
   
-    // Function to make a PUT request
-    async patch(endpoint, data) {
+    //Function to make Post request with token
+    async postWithToken(endpoint, formdata,token=null) {
       try {
+        const response = await fetch(this.baseURL + endpoint, {
+          method: "POST",
+          headers: {
+            "Content-type":"application/json",
+            "api-access-token":token,
+          },
+          body: JSON.stringify(formdata),
+        });
+        this.handleErrors(response);
+        const data = await response.json()
+          return {message: data.data.result,status :true};
+      } catch (error) {
+        console.error("Error during POST request:", error);
+        throw error;
+      }
+    }
+
+    
+    // Function to make a PUT request
+    async patchWithToken(endpoint, formdata,token=null) {
+      try {
+        console.log("paths idns dv",formdata)
         const response = await fetch(this.baseURL + endpoint, {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
+            "Content-type":"application/json",
+            "api-access-token":token,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(formdata),
         });
         this.handleErrors(response);
-        return response.json();
+        const data = await response.json()
+          return {message: data.data.result,status :true};
       } catch (error) {
         console.error("Error during PUT request:", error);
         throw error;
       }
     }
   
+
+    // Function to make a PUT request
+    async uploadFile(endpoint, formdata,token=null) {
+      try {
+        const response = await fetch(this.baseURL + endpoint, {
+          method: "POST",
+          headers: {
+            "api-access-token":token,
+          },
+          body: formdata,
+        });
+        this.handleErrors(response);
+        const data = await response.json()
+          return {message: data.data.result,status :true};
+      } catch (error) {
+        console.error("Error during PUT request:", error);
+        throw error;
+      }
+    }
     // Function to make a DELETE request
     async remove(endpoint) {
       try {
         const response = await fetch(this.baseURL + endpoint, {
           method: "DELETE",
+          headers: {
+            "Content-type":"application/json",
+          },
         });
         this.handleErrors(response);
-        return response.json();
+        const data = await response.json()
+          return {message: data.data.result,status :true};
       } catch (error) {
         console.error("Error during DELETE request:", error);
         throw error;

@@ -56,6 +56,15 @@ const Contacts = ({ t }) => {
         sortContact(filteredContacts)
     }
 
+    const handleRemove=async(contactId)=>{
+            let obj = {
+                receiverEmail:contactId
+              }
+              const response = await apiInstance.postWithToken("/contact/remove",obj,token);
+              if(response.status){
+                fetchContacts()
+              }
+    }
 
 
 
@@ -134,7 +143,7 @@ const Contacts = ({ t }) => {
 
                 {
                     contacts.map((contact, key) =>
-                        <ContactTab keys={key} contact={contact} t={t} />
+                        <ContactTab keys={key} contact={contact} t={t} handleRemove={handleRemove} />
                     )
                 }
 

@@ -9,6 +9,7 @@ import Chats from "./Tabs/Chats";
 import Groups from "./Tabs/Groups";
 import Contacts from "./Tabs/Contacts";
 import Settings from "./Tabs/Settings";
+import Invites from './Tabs/Invites';
 
 function ChatLeftSidebar(props) {
     console.log("spoejfpshfpoijjofijfffffffffffffffffff", props)
@@ -51,7 +52,7 @@ function ChatLeftSidebar(props) {
                 {/* Start notification tab-pane */}
                 <TabPane tabId="notification" id="pills-notification">
                     {/* Settings content */}
-                    <Settings />
+                    <Invites />
                 </TabPane>
                 {/* End notification tab-pane */}
                 {/* Start settings tab-pane */}

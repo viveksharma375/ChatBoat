@@ -50,11 +50,7 @@ const ChatItem=({chat,active_user,openUserChat}) =>{
               className="rounded-circle avatar-xs"
               alt="pic"
             />
-            <div>
-              {chat.status && (
-                <span className="user-status"></span>
-              )}
-            </div>
+           
           </div>
         )}
 

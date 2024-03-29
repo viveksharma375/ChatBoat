@@ -1,19 +1,33 @@
 import React, { Component } from 'react'
-import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import { DropdownItem, DropdownMenu, DropdownToggle, Input, Label, UncontrolledDropdown } from 'reactstrap';
 
-const ContactComponent = ({ keys, contact }) => {
+const ContactComponent = ({ keys, contact ,handleContactSelection,selectedContacts}) => {
+    const toggleContactSelection = (e) => {
+        const contactId = e.target.value;
+        const isChecked = e.target.checked;
 
+        if (isChecked) {
+            // Add the contact ID to the array
+            handleContactSelection([...selectedContacts, contactId]);
+        } else {
+            // Remove the contact ID from the array
+            handleContactSelection(selectedContacts.filter(id => id !== contactId));
+        }
+      };
     return (
 
         <div key={keys} className={keys + 1 === 1 ? "" : "mt-3"}>
             <div className="p-3 fw-bold text-primary">
                 {contact.group}
             </div>
-
+            
             <ul className="list-unstyled contact-list">
                 {
                     contact.children.map((child, key) =>
+                    // onChange={(e) => handleCheck(e, child.id)}
                         <li key={child.id} >
+                            <Input type="checkbox" checked={selectedContacts.includes(child.email)} className="form-check-input" onChange={toggleContactSelection} id={child.id} value={child.email} />
+                                                <Label className="form-check-label" htmlFor={child.id}>
                             <div className="d-flex align-items-center">
                                 <div
                                     className={
@@ -44,6 +58,7 @@ const ContactComponent = ({ keys, contact }) => {
                                                             </DropdownMenu>
                                                         </UncontrolledDropdown> */}
                             </div>
+                            </Label>
                         </li>
                     )
                 }

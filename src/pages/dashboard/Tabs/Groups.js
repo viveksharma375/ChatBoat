@@ -13,6 +13,7 @@ import SelectContact from "../../../components/SelectContact";
 
 //actions
 import { createGroup } from "../../../redux/actions";
+import API from '../../../helpers/api';
 
 const Groups = ({ groups, t ,createGroup}) => {
     const [modal, setModal] = useState(false);
@@ -22,6 +23,11 @@ const Groups = ({ groups, t ,createGroup}) => {
     const [message, setMessage] = useState("");
     const [groupName, setGroupName] = useState("");
     const [groupDesc, setGroupDesc] = useState("");
+    const [contacts, setContacts] = useState([]);
+    const [sortedContacts, setSortedContacts] = useState();
+
+    const token = localStorage.getItem("api-access-token")
+    const apiInstance = new API();
 
 
     const toggle = () => {
@@ -33,16 +39,47 @@ const Groups = ({ groups, t ,createGroup}) => {
         setIsOpenCollapse(!isOpenCollapse);
     }
 
+    const sortContact = (sortedContacts) => {
+        let data = sortedContacts.reduce((r, e) => {
+            try {
+                let group = e.firstName[0];
+                if (!r[group]) r[group] = { group, children: [e] };
+                else r[group].children.push(e);
+            } catch (error) {
+                return sortedContacts;
+            }
+            return r;
+        }, {});
+
+
+        // since data at this point is an object, to get array of values
+        // we use Object.values method
+        let result = Object.values(data);
+        setContacts(result);
+        setSortedContacts(result);
+        return result;
+    };
+    const fetchContacts = async () => {
+
+        // console.log("token is",token)
+        const response = await apiInstance.getWithToken("/contact/find", token)
+        if (response.status) {
+            const contactsData = response.message.data;
+            // console.log("contacts ienfs ",contactsData)
+            const sortedContacts = contactsData.sort((a, b) => {
+                return a.firstName.localeCompare(b.firstName);
+            });
+
+
+            // console.log("sortedcontacts ",sortedContacts)
+            sortContact(sortedContacts);
+        }
+    }
+
     useEffect(() => {
-       
+        fetchContacts();
     }, [])
-    // componentDidUpdate(prevProps) {
-    //     if (prevProps !== this.props) {
-    //         this.setState({
-    //             groups: this.props.groups
-    //         });
-    //     }
-    // }
+    
 
     const createNewGroup = () => {
         if (selectedContact.length > 2) {
@@ -145,7 +182,7 @@ const Groups = ({ groups, t ,createGroup}) => {
                                             <SimpleBar style={{ maxHeight: "150px" }}>
                                                 {/* contacts */}
                                                 <div id="addContacts">
-                                                    <SelectContact handleCheck={handleCheck} />
+                                                    <SelectContact contacts={contacts} handleCheck={handleCheck} />
                                                 </div>
                                             </SimpleBar>
                                         </CardBody>
