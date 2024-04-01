@@ -3,19 +3,18 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Form, Inp
 import MultiselectCheckboxes from 'react-multiselect-checkboxes';
 import API from '../helpers/api';
 import ContactItems from './ContactItem';
+import { useSelector } from 'react-redux';
 const AddContactModal = ({ t, isOpen, toggle }) => {
     const [emailData, setEmailData] = useState([]); // State variable to hold email data fetched from API
     const [selectedContacts, setSelectedContacts] = useState([])
     const [text,setText] = useState("")
 
     const apiInstance = new API();
-    const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : null
+     const token = useSelector((state)=>state.user.token)
 
     const handleInvitation=async ()=>{
-        console.log("handle s ",text,selectedContacts)
         let obj = {text:text,emails:selectedContacts}
         let response = await apiInstance.postWithToken("/contact/invite",obj,token);
-        console.log("response i s",response)
         if(response.status){
         setSelectedContacts([])
         setText("")
@@ -25,7 +24,6 @@ const AddContactModal = ({ t, isOpen, toggle }) => {
 
 
     const handleChangeText=(e)=>{
-        console.log("Value of tect is ",e.target.value)
         setText(e.target.value)
 
     }
@@ -40,7 +38,6 @@ const AddContactModal = ({ t, isOpen, toggle }) => {
 
 
                     const data = response.message.data;
-                    console.log("sdifhoesofihsoihf", data)
                     setEmailData(data);
                 }
                 // setEmailData(data); // Set email data in state
@@ -53,7 +50,7 @@ const AddContactModal = ({ t, isOpen, toggle }) => {
     }, []);
 
     useEffect(() => {
-        console.log("Valueeeeeeeeeeeeeeeeeeeeeee", selectedContacts)
+        
     }, [selectedContacts])
 
 

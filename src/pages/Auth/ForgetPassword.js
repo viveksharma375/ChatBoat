@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 
 //Import formik validation
@@ -46,7 +46,7 @@ const ForgetPassword = (props) => {
         },
     });
 
-    if (localStorage.getItem("authUser")) {
+    if (useSelector((state)=>state.user.user)) {
         return <Navigate to="/" />;
     }
 
@@ -125,8 +125,8 @@ const ForgetPassword = (props) => {
 
 
 const mapStateToProps = (state) => {
-    const { user, loading, error, passwordResetStatus } = state.Auth;
-    return { user, loading, error, passwordResetStatus };
+    const { user,  } = state.user;
+    return { user};
 };
 
 export default connect(mapStateToProps, { forgetPassword, apiError })(ForgetPassword);

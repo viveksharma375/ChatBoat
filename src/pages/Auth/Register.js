@@ -380,8 +380,8 @@ const Register = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { user, loading, error } = state.Auth;
-  return { user, loading, error };
+  const { user } = state.user;
+  return { user};
 };
 
 export default withRouter(

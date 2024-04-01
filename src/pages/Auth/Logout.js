@@ -12,16 +12,16 @@ import { logoutUser } from '../../redux/actions';
  */
 const Logout = (props) => {
     const dispatch = useDispatch();
-    const { isUserLogout } = useSelector((state) => ({
-        isUserLogout: state.Auth.isUserLogout,
+    const { token } = useSelector((state) => ({
+        token: state.user.token,
       }));
 
     useEffect(() => {
         dispatch(logoutUser(props.router.navigate));
     }, [dispatch, props.router.navigate]);
 
-    if (isUserLogout) {
-        console.log("isUserLogout",isUserLogout)
+    if (token) {
+        console.log("isUserLogout",token)
         return <Navigate to="/login" />;
       }
 

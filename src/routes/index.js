@@ -10,14 +10,14 @@ import { authProtectedRoutes, publicRoutes } from './routes';
 import NonAuthLayout from "../layouts/NonAuth";
 import AuthLayout from "../layouts/AuthLayout/";
 
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { userLayout } from '../redux/slice.auth';
 const AuthProtected = (props) => {
     /*
       Navigate is un-auth access protected routes via url
       */
-        
-      if (props.isAuthProtected && !localStorage.getItem("authUser")) {
+     const token = useSelector((state)=>state.user.token)
+      if (props.isAuthProtected && token==null) {
             return (
                 <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
             );
@@ -30,13 +30,17 @@ const AuthProtected = (props) => {
  * Main Route component
  */
 const Routes = () => {
-    const { layoutMode } = useSelector(state => ({
-        layoutMode: state.Layout.layoutMode,
+    const { layout } = useSelector(state => ({
+        layout: state.user.layout,
       }));
+    const dispatch = useDispatch();
     
     useEffect(() => {
-        localStorage.setItem("layoutMode",layoutMode)
-    }, [layoutMode])
+        dispatch(userLayout({
+           layout:layout
+        }))
+        // localStorage.setItem("layoutMode",layout)
+    }, [layout])
     return (
         // rendering the router with layout
             <Suspense fallback = {<div></div>} >

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, InputGroup, UncontrolledTooltip } from "reactstrap";
 import API from "../../../helpers/api";
+import { useSelector } from "react-redux";
 
 
 
 const Invites = () => {
     const [contacts, setContacts] = useState([]);
     const apiInstance = new API();
-    const token = localStorage.getItem("api-access-token")
+    const token = useSelector((state)=>state.user.token)
     useEffect(() => {
         fetchContacts();
     }, []);
@@ -15,7 +16,6 @@ const Invites = () => {
     const fetchContacts = async () => {
         try {
             const response = await apiInstance.getWithToken("/contact/fetchInvites", token);
-            console.log("responseeeeeeeeeeeeee ", response.message.data)
             if (response.status) {
                 setContacts(response.message.data);
             }
@@ -35,7 +35,7 @@ const Invites = () => {
       }
       const response = await apiInstance.postWithToken("/contact/connect",obj,token);
       if(response.status){
-        console.log("response is ",response)
+        fetchContacts()
       }
 
     };

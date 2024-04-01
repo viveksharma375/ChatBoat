@@ -7,15 +7,15 @@ import { connect } from "react-redux";
 import API from '../../helpers/api';
 import { socket } from '../../helpers/socket';
 
-const  Index=({users}) => {
-     console.log("userownefosborf",users)
+const  Index=({userOnline}) => {
+    console.log("users ssssss",userOnline)
         return (
             <React.Fragment>
                 {/* chat left sidebar */}
-                <ChatLeftSidebar recentChatList={users} />
+                <ChatLeftSidebar recentChatList={userOnline} />
 
                 {/* user chat */}
-                <UserChat recentChatList={users} />
+                <UserChat recentChatList={userOnline} />
 
             </React.Fragment>
         );
@@ -23,8 +23,8 @@ const  Index=({users}) => {
 }
 
 const mapStateToProps = (state) => {
-    const { users } = state.Chat;
-    return { users };
+    const { userOnline } = state.user;
+    return { userOnline };
 };
 
 export default connect(mapStateToProps, {})(Index);

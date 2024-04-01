@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const ChatItem=({chat,active_user,openUserChat}) =>{
-  console.log("rhia ia keyyy" , chat)
   return (
     <li
     key={chat.id}

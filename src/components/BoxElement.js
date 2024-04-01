@@ -1,7 +1,6 @@
 import React from 'react'
 
 const BoxElement=({child})=> {
-    console.log("childdddddddddddddddddd",child)
   return (
     <div>
        <li key={child.id} >

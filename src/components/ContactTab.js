@@ -20,10 +20,6 @@ const ContactTab = ({ keys, contact, t,handleRemove }) => {
                         <li key={child.id} >
 
 
-
-
-
-
                             <div className="d-flex align-items-center">
                                 {child.profilePath ? (
                                     <div
@@ -70,7 +66,7 @@ const ContactTab = ({ keys, contact, t,handleRemove }) => {
                                                 <i className="ri-more-2-fill"></i>
                                             </DropdownToggle>
                                             <DropdownMenu className="dropdown-menu-end">
-                                                <DropdownItem>{t('Share')} <i className="ri-share-line float-end text-muted"></i></DropdownItem>
+                                                {/* <DropdownItem>{t('Share')} <i className="ri-share-line float-end text-muted"></i></DropdownItem> */}
                                                 <DropdownItem>{t('Block')} <i className="ri-forbid-line float-end text-muted"></i></DropdownItem>
                                                 <DropdownItem onClick={() => handleRemoveClick(child.email)}>{t('Remove')} <i className="ri-delete-bin-line float-end text-muted"></i></DropdownItem>
                                             </DropdownMenu>

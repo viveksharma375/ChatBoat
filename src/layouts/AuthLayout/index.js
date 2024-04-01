@@ -1,51 +1,41 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import withRouter from "../../components/withRouter";
-import { connect } from "react-redux"
+import { connect, useDispatch, useSelector } from "react-redux"
 import PropTypes from "prop-types";
 import { changeLayoutMode } from '../../redux/actions';
 
 //Import Components
 import LeftSidebarMenu from "./LeftSidebarMenu";
+import { userLayout } from '../../redux/slice.auth';
 
-class Index extends Component {
-    constructor(props) {
-        super(props);
-        this.state={};
-        this.capitalizeFirstLetter.bind(this);
-    }
-    
+const Index =(props)=> {
+    const dispatch = useDispatch();
     //function for capital first letter of current page pathname
-    capitalizeFirstLetter = string => {
-        return string.charAt(1).toUpperCase() + string.slice(2);
+    const capitalizeFirstLetter = (name) => {
+        return name.charAt(1).toUpperCase() + name.slice(2);
     };
 
-    componentDidMount(){
-        var getLayoutMode = localStorage.getItem("layoutMode");
-        this.props.changeLayoutMode(getLayoutMode);
-        if (getLayoutMode) {
-            this.props.changeLayoutMode(getLayoutMode);
-        } else {
-            this.props.changeLayoutMode(this.props.layout.layoutMode);
-        }
-
-        let currentage = this.capitalizeFirstLetter(this.props.router.location.pathname);
-
-        //set document title according to page path name
-        document.title = currentage + " | Chatvia - Responsive Bootstrap 5 Admin Dashboard";
-    }
+    let layout = useSelector((state)=>state.user.layout);
     
-    render() {
+  
+    useEffect(() => {
+        dispatch(userLayout({
+            layout:layout|| props.layout.layoutMode
+        }))
+
+        const currentage = capitalizeFirstLetter(props.router.location.pathname);
+        document.title = currentage + ' | Chatvia - Responsive Bootstrap 5 Admin Dashboard';
+
+    }, [dispatch,layout, props.layout.layoutMode, props.router.location.pathname]);
         return (
-            <React.Fragment>
-                <div className="layout-wrapper d-lg-flex">
+            <div className="layout-wrapper d-lg-flex">
                     {/* left sidebar menu */}
                     <LeftSidebarMenu />
                         {/* render page content */}
-                        {this.props.children}
+                        {props.children}
                 </div>
-            </React.Fragment>
         );
-    }
+    
 }
 
 Index.propTypes = {
@@ -53,8 +43,8 @@ Index.propTypes = {
   };
 
 const mapStateToProps = state => {
-    const { layoutMode } = state.Layout;
-    return { layoutMode };
+    const { layout } = state.user;
+    return { layout };
   };
 
-export default withRouter(connect(mapStateToProps, { changeLayoutMode })(Index))
+export default withRouter(connect(mapStateToProps)(Index))

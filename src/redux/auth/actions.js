@@ -7,13 +7,21 @@ import {
     REGISTER_USER_SUCCESS,
     FORGET_PASSWORD,
     FORGET_PASSWORD_SUCCESS,
-    API_FAILED
+    API_FAILED,
+    USER_TOKEN
 } from './constants';
 
-export const loginUser = (username, password, history) => ({
+export const loginUser = (username, password) => ({
     type: LOGIN_USER,
-    payload: { username, password, history }
+    payload: { username, password }
 });
+
+export const userToken = (token) => ({
+    type: USER_TOKEN,
+    payload: token
+});
+
+
 
 export const loginUserSuccess = (user) => ({
     type: LOGIN_USER_SUCCESS,

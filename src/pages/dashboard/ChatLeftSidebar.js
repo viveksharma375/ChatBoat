@@ -11,8 +11,8 @@ import Contacts from "./Tabs/Contacts";
 import Settings from "./Tabs/Settings";
 import Invites from './Tabs/Invites';
 
-function ChatLeftSidebar(props) {
-    console.log("spoejfpshfpoijjofijfffffffffffffffffff", props)
+const ChatLeftSidebar=(props)=> {
+    console.log("propspssss",props.activeTab)
     const activeTab = props.activeTab;
 
     return (
@@ -72,7 +72,7 @@ function ChatLeftSidebar(props) {
 
 const mapStatetoProps = state => {
     return {
-        ...state.Layout
+        ...state.user
     };
 };
 

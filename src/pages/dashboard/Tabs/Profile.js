@@ -9,74 +9,40 @@ import {
 
 //Import components
 import CustomCollapse from "../../../components/CustomCollapse";
-import AttachedFiles from "../../../components/AttachedFiles";
 
-//Import Images
-import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 //i18n
 import { useTranslation } from "react-i18next";
 import API from "../../../helpers/api";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-function Profile(props) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+import withRouter from "../../../components/withRouter";
+import { connect } from "react-redux";
+const  Profile=(props)=> {
+  console.log("PROFILEEEEEEEEEEEEeee",props)
   const [isOpen, setisOpen] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const [currentImage, setcurrentImage] = useState(null);
+  const profile = props.user;
+  const currentImage = props.user.profilePath;
 
 
   const [isOpen1, setIsOpen1] = useState(true);
-  const [isOpen2, setIsOpen2] = useState(false);
-  const [files] = useState([
-    { name: "Admin-A.zip", size: "12.5 MB", thumbnail: "ri-file-text-fill" },
-    { name: "Image-1.jpg", size: "4.2 MB", thumbnail: "ri-image-fill" },
-    { name: "Image-2.jpg", size: "3.1 MB", thumbnail: "ri-image-fill" },
-    { name: "Landing-A.zip", size: "6.7 MB", thumbnail: "ri-file-text-fill" },
-  ]);
-  const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
-  const apiInstance = new API();
+
+ 
   /* intilize t variable for multi language implementation */
   const { t } = useTranslation();
 
   const toggleCollapse1 = () => {
     setIsOpen1(!isOpen1);
-    setIsOpen2(false);
+    
   };
 
 
-  const toggleCollapse2 = () => {
-    setIsOpen2(!isOpen2);
-    setIsOpen1(false);
-  };
-
-  const toggle = () => setDropdownOpen(!dropdownOpen);
-  const fetchDetails = async () => {
-
-    const response = await apiInstance.getWithToken("/user/email", token)
-    if (response.status) {
-
-
-      const profileData = response.message.data;;
-      console.log("profile dats ", profileData)
-      setProfile(profileData)
-
-      //TODO change this
-      if (profileData.profilePath) {
-        
-        
-        console.log("profilePathhhhhhhhh ",`${profileData.profilePath}`)
-        setcurrentImage(`${profileData.profilePath}`)
-      }
-    }
-
-  }
+  
+  
   const toggleLightbox = (currentImage) => {
     setisOpen(!isOpen);
   };
-  useEffect(() => {
-    fetchDetails();
-  }, [])
+
 
   return (
     <>
@@ -182,4 +148,14 @@ function Profile(props) {
   );
 }
 
-export default Profile;
+
+
+const mapStateToProps = (state) => {
+  const { user } = state.user;
+  return { user };
+};
+
+export default withRouter(
+  connect(mapStateToProps)(Profile)
+);
+// export default Profile;

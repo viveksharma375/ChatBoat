@@ -39,5 +39,9 @@ const getLoggedInUser = () => {
     const user = localStorage.getItem('authUser');
     return user ? (typeof (user) == 'object' ? user : JSON.parse(user)) : null;
 }
+const getLoggedInToken = () => {
+    const token = localStorage.getItem('api-access-token');
+    return token ? (typeof (token) == 'string' ? token : JSON.parse(token)) : null;
+}
 
-export { isUserAuthenticated, setLoggedInUser, getLoggedInUser };
+export { isUserAuthenticated, setLoggedInUser, getLoggedInUser, getLoggedInToken};

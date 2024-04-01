@@ -32,7 +32,6 @@ class API {
 
     async getWithToken(endpoint,token=null) {
         try {
-            console.log("nsodifs v",this.baseURL+endpoint)
           const response = await fetch(this.baseURL + endpoint, {  method: "GET",
           headers: {
             "Content-type":"application/json",
@@ -90,7 +89,6 @@ class API {
     // Function to make a PUT request
     async patchWithToken(endpoint, formdata,token=null) {
       try {
-        console.log("paths idns dv",formdata)
         const response = await fetch(this.baseURL + endpoint, {
           method: "PATCH",
           headers: {

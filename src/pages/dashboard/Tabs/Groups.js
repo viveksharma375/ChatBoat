@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, UncontrolledTooltip, Form, Label, Input, Collapse, CardHeader, CardBody, Alert, InputGroup, Card, Badge } from 'reactstrap';
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 import { withTranslation } from 'react-i18next';
 
@@ -26,7 +26,7 @@ const Groups = ({ groups, t ,createGroup}) => {
     const [contacts, setContacts] = useState([]);
     const [sortedContacts, setSortedContacts] = useState();
 
-    const token = localStorage.getItem("api-access-token")
+    const token = useSelector((state)=>state.user.token)
     const apiInstance = new API();
 
 
@@ -263,8 +263,8 @@ const Groups = ({ groups, t ,createGroup}) => {
 }
 
 const mapStateToProps = (state) => {
-    const { groups, active_user } = state.Chat;
-    return { groups, active_user };
+    const { groups, userOnline } = state.user;
+    return { groups, userOnline };
 };
 
 export default (connect(mapStateToProps, { createGroup })(withTranslation()(Groups)));

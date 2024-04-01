@@ -10,6 +10,7 @@ import AddContactModal from '../../../components/AddContactModal';
 import { APIClient } from '../../../helpers/apiClient';
 import API from '../../../helpers/api';
 import { socket } from '../../../helpers/socket';
+import { useSelector } from 'react-redux';
 //use sortedContacts variable as global variable to sort contacts
 let sortedContacts = [
     {
@@ -23,11 +24,11 @@ const Contacts = ({ t }) => {
     const [contacts, setContacts] = useState([]);
     const [allcontacts, setFetchContacts] = useState([]);
     const [searchValue, setSearchValue] = useState("")
-    const token = localStorage.getItem("api-access-token")
+    const token = useSelector((state)=>state.user.token)
     const toggle = () => {
         setModal(!modal);
     };
-    const data = JSON.parse(localStorage.getItem("authUser"))
+    const data  = useSelector((state)=>state.user.user)
     
     const apiInstance = new API();
     const fetchContacts = async () => {
@@ -143,7 +144,7 @@ const Contacts = ({ t }) => {
 
                 {
                     contacts.map((contact, key) =>
-                        <ContactTab keys={key} contact={contact} t={t} handleRemove={handleRemove} />
+                        <ContactTab key={key} keys={key} contact={contact} t={t} handleRemove={handleRemove} />
                     )
                 }
 

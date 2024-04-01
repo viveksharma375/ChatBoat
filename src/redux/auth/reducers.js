@@ -6,13 +6,15 @@ import {
     REGISTER_USER_SUCCESS,
     FORGET_PASSWORD,
     FORGET_PASSWORD_SUCCESS,
-    API_FAILED
+    API_FAILED,
+    USER_TOKEN
 } from './constants';
 
-import { getLoggedInUser } from '../../helpers/authUtils';
+import { getLoggedInToken, getLoggedInUser } from '../../helpers/authUtils';
 
 const INIT_STATE = {
     user: getLoggedInUser(),
+    token:getLoggedInToken(),
     loading: false,
     isUserLogout : false
 };
@@ -40,6 +42,9 @@ const Auth = (state = INIT_STATE, action) => {
 
         case API_FAILED:
             return { ...state, loading: false, error: action.payload, isUserLogout : false };
+
+        case USER_TOKEN:
+            return {...state,loading:false,token:action.payload}
 
         default: return { ...state };
     }

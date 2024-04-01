@@ -2,20 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import avatar2 from "../assets/images/users/avatar-2.jpg"
 import API from '../helpers/api';
+import { useSelector } from 'react-redux';
 
 
-const OnlineUserItem=({key,id}) =>{
-   const token = localStorage.getItem("api-access-token")?localStorage.getItem("api-access-token"):null
-   const [profile,setProfile] = useState(null);
+const OnlineUserItem=({id}) =>{
+  const token = useSelector((state)=>state.user.token)
+  const [profile,setProfile] = useState(null);
     const apiInstance  = new API();
-    console.log(`${id} value is `)
 const fetchDetails=async ()=>{
     const response = await apiInstance.getWithToken(`/user/${id}`, token)
         if (response.status) {
             
             
             const profileData = response.message.data;;
-            console.log("profile dats ",profileData)
             setProfile(profileData)
         }
 }
@@ -24,7 +23,7 @@ const fetchDetails=async ()=>{
   },[])
   return (
     (profile && 
-        <div key={key} className="item">
+        <div key={id} className="item">
             <Link to="#" className="user-status-box">
               <div className="avatar-xs mx-auto d-block chat-user-img online">
                 <img

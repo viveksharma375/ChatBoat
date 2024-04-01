@@ -8,7 +8,7 @@ import { openUserSidebar, setFullUser } from "../../../redux/actions";
 //import images
 import user from '../../../assets/images/users/avatar-4.jpg'
 
-function UserHead(props) {
+const  UserHead=(props)=> {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [dropdownOpen1, setDropdownOpen1] = useState(false);
     const [Callmodal, setCallModal] = useState(false);
@@ -51,14 +51,14 @@ function UserHead(props) {
                                     <i className="ri-arrow-left-s-line"></i></Link>
                             </div>
                             {
-                                props.users[props.active_user].profilePicture !== "Null" ?
+                                props.activeChat !== "Null" ?
                                     <div className="me-3 ms-0">
-                                        <img src={props.users[props.active_user].profilePicture} className="rounded-circle avatar-xs" alt="chatvia" />
+                                        <img src={props.activeChat?.profilePath} className="rounded-circle avatar-xs" alt="chatvia" />
                                     </div>
                                     : <div className="chat-user-img align-self-center me-3">
                                         <div className="avatar-xs">
                                             <span className="avatar-title rounded-circle bg-soft-primary text-primary">
-                                                {props.users[props.active_user].name.charAt(0)}
+                                                {props.activeChat?.firstName.charAt(0)}{props.activeChat?.lastName.charAt(0)}
                                             </span>
                                         </div>
                                     </div>
@@ -67,10 +67,10 @@ function UserHead(props) {
                             <div className="flex-grow-1 overflow-hidden">
                                 <h5 className="font-size-16 mb-0 text-truncate">
                                     <Link to="#" onClick={(e) => openUserSidebar(e)} className="text-reset user-profile-show">
-                                        {props.users[props.active_user].name}
+                                        {props.activeChat?.firstName} {props.activeChat?.lastName}
                                     </Link>
                                     {(() => {
-                                        switch (props.users[props.active_user].status) {
+                                        switch (props.activeChat?.status) {
                                             case "online":
                                                 return (
                                                     <i className="ri-record-circle-fill font-size-10 text-success d-inline-block ms-1"></i>
@@ -217,8 +217,8 @@ function UserHead(props) {
 
 
 const mapStateToProps = (state) => {
-    const { users, active_user } = state.Chat;
-    return { ...state.Layout, users, active_user };
+    const { user, onlineUser ,activeChat} = state.user;
+    return { ...state.user, user, onlineUser,activeChat };
 };
 
 export default connect(mapStateToProps, { openUserSidebar, setFullUser })(UserHead);

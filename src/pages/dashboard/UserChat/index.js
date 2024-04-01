@@ -35,7 +35,7 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 //i18n
 import { useTranslation } from "react-i18next";
 
-function UserChat(props) {
+const UserChat = (props) => {
   const ref = useRef();
 
   const [modal, setModal] = useState(false);
@@ -46,12 +46,10 @@ function UserChat(props) {
   //demo conversation messages
   //userType must be required
   const [allUsers] = useState(props.recentChatList);
-  const [chatMessages, setchatMessages] = useState(
-    props.recentChatList[props.active_user].messages
-  );
+  const [chatMessages, setchatMessages] = useState(null);
 
   useEffect(() => {
-    setchatMessages(props.recentChatList[props.active_user].messages);
+    setchatMessages(props.chats[props.activeChat?.id]);
     ref.current.recalculate();
     if (ref.current.el) {
       ref.current.getScrollElement().scrollTop =
@@ -157,15 +155,14 @@ function UserChat(props) {
             id="messages"
           >
             <ul className="list-unstyled mb-0">
-              {chatMessages.map((chat, key) =>
+              {chatMessages?.map((chat, key) =>
                 chat.isToday && chat.isToday === true ? (
                   <li key={"dayTitle" + key}>
                     <div className="chat-day-title">
                       <span className="title">Today</span>
                     </div>
                   </li>
-                ) : props.recentChatList[props.active_user].isGroup ===
-                  true ? (
+                ) : props.recentChatList[props.active_user].isGroup === true ? (
                   <li
                     key={key}
                     className={chat.userType === "sender" ? "right" : ""}
@@ -175,7 +172,7 @@ function UserChat(props) {
                         {chat.userType === "sender" ? (
                           <img src={avatar1} alt="chatvia" />
                         ) : props.recentChatList[props.active_user]
-                          .profilePicture === "Null" ? (
+                            .profilePicture === "Null" ? (
                           <div className="chat-user-img align-self-center me-3">
                             <div className="avatar-xs">
                               <span className="avatar-title rounded-circle bg-soft-primary text-primary">
@@ -278,7 +275,7 @@ function UserChat(props) {
                         //logic for display user name and profile only once, if current and last messaged sent by same receiver
                         chatMessages[key + 1] ? (
                           chatMessages[key].userType ===
-                            chatMessages[key + 1].userType ? (
+                          chatMessages[key + 1].userType ? (
                             <div className="chat-avatar">
                               <div className="blank-div"></div>
                             </div>
@@ -287,7 +284,7 @@ function UserChat(props) {
                               {chat.userType === "sender" ? (
                                 <img src={avatar1} alt="chatvia" />
                               ) : props.recentChatList[props.active_user]
-                                .profilePicture === "Null" ? (
+                                  .profilePicture === "Null" ? (
                                 <div className="chat-user-img align-self-center me-3">
                                   <div className="avatar-xs">
                                     <span className="avatar-title rounded-circle bg-soft-primary text-primary">
@@ -313,7 +310,7 @@ function UserChat(props) {
                             {chat.userType === "sender" ? (
                               <img src={avatar1} alt="chatvia" />
                             ) : props.recentChatList[props.active_user]
-                              .profilePicture === "Null" ? (
+                                .profilePicture === "Null" ? (
                               <div className="chat-user-img align-self-center me-3">
                                 <div className="avatar-xs">
                                   <span className="avatar-title rounded-circle bg-soft-primary text-primary">
@@ -406,12 +403,11 @@ function UserChat(props) {
                         </div>
                         {chatMessages[key + 1] ? (
                           chatMessages[key].userType ===
-                            chatMessages[key + 1].userType ? null : (
+                          chatMessages[key + 1].userType ? null : (
                             <div className="conversation-name">
                               {chat.userType === "sender"
                                 ? "Patricia Smith"
-                                : props.recentChatList[props.active_user]
-                                  .name}
+                                : props.recentChatList[props.active_user].name}
                             </div>
                           )
                         ) : (
@@ -434,7 +430,7 @@ function UserChat(props) {
             <ModalBody>
               <CardBody className="p-2">
                 <SimpleBar style={{ maxHeight: "200px" }}>
-                  <SelectContact handleCheck={() => { }} />
+                  <SelectContact handleCheck={() => {}} />
                 </SimpleBar>
                 <ModalFooter className="border-0">
                   <Button color="primary">Forward</Button>
@@ -446,18 +442,17 @@ function UserChat(props) {
           <ChatInput onaddMessage={addMessage} />
         </div>
 
-        <UserProfileSidebar
+        {/* <UserProfileSidebar
           activeUser={props.recentChatList[props.active_user]}
-        />
+        /> */}
       </div>
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => {
-  const { active_user } = state.Chat;
-  const { userSidebar } = state.Layout;
-  return { active_user, userSidebar };
+  const { userOnline ,activeTab,activeChat,chats} = state.user;
+  return { userOnline, activeTab ,activeChat,chats};
 };
 
 export default withRouter(

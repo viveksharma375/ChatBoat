@@ -1,48 +1,41 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import withRouter from "../components/withRouter";
-import { connect } from "react-redux"
+import { connect, useDispatch, useSelector } from "react-redux"
 import PropTypes from "prop-types";
-import { changeLayoutMode } from '../redux/actions';
+import { userLayout } from '../redux/slice.auth';
 
-class NonAuth extends Component {
-    constructor(props) {
-        super(props);
-        this.state={};
-        this.capitalizeFirstLetter.bind(this);
-    }
+const NonAuth =(props)=> {
     
-    capitalizeFirstLetter = string => {
-        return string.charAt(1).toUpperCase() + string.slice(2);
+    
+    const capitalizeFirstLetter = (name) => {
+        return name.charAt(1).toUpperCase() + name.slice(2);
     };
+    const dispatch = useDispatch();
+    let layout = useSelector((state)=>state.user.layout)
 
-    componentDidMount(){
-        var getLayoutMode = localStorage.getItem("layoutMode");
-        this.props.changeLayoutMode(getLayoutMode);
-        if (getLayoutMode) {
-            this.props.changeLayoutMode(getLayoutMode);
-        } else {
-            this.props.changeLayoutMode(this.props.layoutMode);
-        }
+    useEffect(() => {
+        dispatch(userLayout({
+            layout:layout|| props.layout.layoutMode
+        }))
 
-        let currentage = this.capitalizeFirstLetter(this.props.router.location.pathname);
+        const currentage = capitalizeFirstLetter(props.router.location.pathname);
+        document.title = currentage + ' | Chatvia - Responsive Bootstrap 5 Admin Dashboard';
 
-        document.title =
-          currentage + " | Chatvia - Responsive Bootstrap 5 Admin Dashboard";
-    }
-    render() {
+    }, [dispatch,layout, props.layout.layoutMode, props.router.location.pathname]);
+
         return <React.Fragment>
-            {this.props.children}
+            {props.children}
         </React.Fragment>;
-    }
+    
 }
 
 NonAuth.propTypes = {
-    layoutMode: PropTypes.any,
+    layout: PropTypes.any,
   };
 
 const mapStateToProps = state => {
-    const { layoutMode } = state.Layout;
-    return { layoutMode };
+    const { layout } = state.user;
+    return { layout };
   };
 
-export default withRouter(connect(mapStateToProps, { changeLayoutMode })(NonAuth))
+export default withRouter(connect(mapStateToProps)(NonAuth))

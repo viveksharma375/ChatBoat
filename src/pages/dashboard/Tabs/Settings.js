@@ -16,6 +16,8 @@ import "react-image-lightbox/style.css";
 //i18n
 import { useTranslation } from 'react-i18next';
 import API from '../../../helpers/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { userData } from '../../../redux/slice.auth';
 
 const Settings = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -29,7 +31,6 @@ const Settings = () => {
     const [isOpen3, setIsOpen3] = useState(false);
     const [isOpen4, setIsOpen4] = useState(false);
     const [profile, setProfile] = useState(false);
-    const [showBTN2, setShowBTN2] = useState(false)
     const [toggleButton, setToggleButton] = useState(false)
     const [formData, setFormData] = useState({
         firstName: "",
@@ -38,11 +39,11 @@ const Settings = () => {
         phoneNumber: "",
         about:"",
     });
-    const token = localStorage.getItem("api-access-token") ? localStorage.getItem("api-access-token") : "";
+    const token = useSelector((state)=>state.user.token)
     const apiInstance = new API();
     /* intilize t variable for multi language implementation */
     const { t } = useTranslation();
-
+   const dispatch = useDispatch();  
     const toggleCollapse1 = () => {
         setIsOpen1(!isOpen1);
         setIsOpen2(false);
@@ -76,7 +77,6 @@ const Settings = () => {
 
     const handleFileChange = (e) => {
         e.preventDefault();
-        console.log("testiiiiiiiiiiiiiiiiiing", e.target.files[0])
         setcurrentImage(URL.createObjectURL(e.target.files[0]));
         setShowBTN(true)
         setSelectedFile(e.target.files[0]);
@@ -84,38 +84,38 @@ const Settings = () => {
     const handleInputChange = (e) => {
 
         const { name, value } = e.target;
-        console.log("eeeeeeeeeeeeee",name,value)
         setFormData({ ...formData, [name]: value });
     };
     
 
     const handleUpload = async (e) => {
-        console.log("seleciendfovnfvn", selected, e)
 
         e.preventDefault()
         if (selected) {
-            console.log("inside thse handle a")
             const formData = new FormData();
             formData.append('profilePicture', selected);
-            console.log("formdatais f ", formData)
             const response = await apiInstance.uploadFile("/user/uploadFile", formData, token)
             if (response.status) {
+                
+                dispatch(userData({
+                    profilePath:response.message.filePath
+                }))
                 setShowBTN(false);
             }
 
 
-        } else {
-            console.log("ins soenfs pw")
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("form dataaaaaaaaa",formData)
         
         const response = await apiInstance.patchWithToken("/user/update", formData, token)
         if (response.status) {
-            console.log("responseeeeee",response)
+            console.log("formDatatata",formData)
+            dispatch(userData({ 
+                user:formData
+              }));
             toggleEdit()
             
         }
@@ -127,7 +127,6 @@ const Settings = () => {
 
 
             const profileData = response.message.data;
-            console.log("profile dats ", profileData)
             setProfile(profileData)
             if (profileData.profilePath) {
 
@@ -150,9 +149,6 @@ const Settings = () => {
         fetchDetails();
     }, [])
 
-    useEffect(() => {
-        console.log("selected=>>>>>>>>>>", selected)
-    }, [selected])
 
 
 

@@ -19,7 +19,6 @@ import ChatItem from "../../../components/chatItem";
 const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, activeUser }) => {
   const [searchChat, setSearchChat] = useState("");
   const [filteredChatList, setFilteredChatList] = useState(recentChatList);
-  console.log("Recentchat list ",recentChatList)
   useEffect(() => {
     var li = document.getElementById("conversation" + active_user);
     if (li) {
@@ -124,7 +123,7 @@ const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, act
             className="list-unstyled chat-list chat-user-list"
             id="chat-list"
           >
-            {recentChatList.map((chat, key) => (
+            {recentChatList?.map((chat, key) => (
 
               <ChatItem key={key} chat={chat} active_user={active_user} openUserChat={openUserChat} />
 
@@ -139,8 +138,8 @@ const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, act
 }
 
 const mapStateToProps = (state) => {
-  const { active_user } = state.Chat;
-  return { active_user };
+  const { userOnline } = state.user;
+  return { userOnline };
 };
 
 export default connect(mapStateToProps, {
