@@ -12,10 +12,9 @@ import SimpleBar from "simplebar-react";
 import SelectContact from "../../../components/SelectContact";
 
 //actions
-import { createGroup } from "../../../redux/actions";
 import API from '../../../helpers/api';
 
-const Groups = ({ groups, t ,createGroup}) => {
+const Groups = ({ groups, t }) => {
     const [modal, setModal] = useState(false);
     const [isOpenCollapse, setIsOpenCollapse] = useState(false);
     const [selectedContact, setSelectedContact] = useState([]);
@@ -95,7 +94,6 @@ const Groups = ({ groups, t ,createGroup}) => {
                 members: selectedContact
             }
             //call action for creating a group
-            createGroup(obj);
             toggle();
 
         } else if (selectedContact.length === 1) {
@@ -267,4 +265,4 @@ const mapStateToProps = (state) => {
     return { groups, userOnline };
 };
 
-export default (connect(mapStateToProps, { createGroup })(withTranslation()(Groups)));
+export default (connect(mapStateToProps)(withTranslation()(Groups)));

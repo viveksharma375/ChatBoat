@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Input, Row, Col, UncontrolledTooltip, ButtonDropdown, DropdownToggle, DropdownMenu, Label, Form } from "reactstrap";
 import EmojiPicker from 'emoji-picker-react';
 
-function ChatInput(props) {
+const ChatInput=(props)=> {
     const [textMessage, settextMessage] = useState("");
     const [isOpen, setisOpen] = useState(false);
     const [file, setfile] = useState({
@@ -42,12 +42,14 @@ function ChatInput(props) {
         e.preventDefault();
         //if text value is not emptry then call onaddMessage function
         if (textMessage !== "") {
+            // todo add message
             props.onaddMessage(textMessage, "textMessage");
             settextMessage("");
         }
 
         //if file input value is not empty then call onaddMessage function
         if (file.name !== "") {
+            //TODO add messae
             props.onaddMessage(file, "fileMessage");
             setfile({
                 name: "",
@@ -64,6 +66,7 @@ function ChatInput(props) {
 
     return (
         <div className="p-3 p-lg-4 border-top mb-0">
+            {props.activeChat && 
                 <Form onSubmit={(e) => onaddMessage(e, textMessage)} >
                     <Row className='g-0'>
                         <Col>
@@ -117,6 +120,7 @@ function ChatInput(props) {
                         </Col>
                     </Row>
                 </Form>
+}
             </div>
     );
 }

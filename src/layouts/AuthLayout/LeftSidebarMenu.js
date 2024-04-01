@@ -13,7 +13,7 @@ import {
 import classnames from "classnames";
 import { connect, useDispatch, useSelector } from "react-redux";
 
-import { setActiveTab, changeLayoutMode } from "../../redux/actions";
+
 
 //Import Images
 import logo from "../../assets/images/logo.svg";
@@ -38,13 +38,13 @@ const LeftSidebarMenu = (props) => {
 
   const onChangeLayoutMode = (value) => {
     console.log("valueeee ", value);
-    if (changeLayoutMode) {
+   
       dispatch(
         userLayout({
           layout: value,
         })
       );
-    }
+    
   };
 
   const [dropdownOpen, setDropdownOpen] = useState(false);

@@ -1,53 +1,94 @@
 import React, { Component, useEffect, useState } from "react";
 import { Input, InputGroup } from "reactstrap";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 
 //simplebar
 import SimpleBar from "simplebar-react";
 
 //actions
-import {
-  setconversationNameInOpenChat,
-  activeUser,
-} from "../../../redux/actions";
+
 
 //components
 import OnlineUsers from "./OnlineUsers";
 import ChatItem from "../../../components/chatItem";
+import { socket } from "../../../helpers/socket";
+import { userConnected } from "../../../redux/slice.auth";
 
-const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, activeUser }) => {
+const Chats = ({ connectedUsers, activeChat, userOnline }) => {
   const [searchChat, setSearchChat] = useState("");
-  const [filteredChatList, setFilteredChatList] = useState(recentChatList);
+  const [filteredChatList, setFilteredChatList] = useState(connectedUsers);
+  const dispatch = useDispatch();
+
+  //TODO hadnlemesgg
+  const setMessageData=(data)=>{
+    console.log("MESHSDFJSJDFDF",data)
+    
+    
+  }
+
+  const setContactData=(data)=>{
+    console.log("MESHSDFJSJDFDF",data)
+    dispatch(userConnected({
+      connectedUsers:data
+    }))
+    
+  }
   useEffect(() => {
-    var li = document.getElementById("conversation" + active_user);
+    var li = document.getElementById("conversation" + activeChat);
     if (li) {
       li.classList.add("active");
     }
-  }, [active_user]);
+  }, [activeChat]);
 
   useEffect(() => {
-    setFilteredChatList(recentChatList);
-  }, [recentChatList]);
+   
+
+    setFilteredChatList(connectedUsers);
+    console.log("connectedUsers ddd",connectedUsers)
+  }, [connectedUsers]);
 
   
+  useEffect(()=>{
+    socket.emit("fetch_message");
+    socket.emit("fetchAllConnection");
+    socket.on("user_message_data",setMessageData)
+    socket.on("user_connect_data",setContactData)
+    
+    return () => {
+      socket.off("user_message_data",setMessageData)
+      socket.off("user_connect_data",setContactData)
+      socket.off("fetch_message")
+      socket.off("fetchAllConnection")
+
+  }
+  },[])
+
+
+
+
+
+
+
+
+
   const handleChange = (e) => {
     setSearchChat(e.target.value);
     const search = e.target.value.toLowerCase();
-    const filteredArray = recentChatList.filter((element) =>
-      element.name.toLowerCase().includes(search) ||
-      element.name.toUpperCase().includes(search)
+    const filteredArray = connectedUsers.filter((element) =>
+      element.firstName.toLowerCase().includes(search) ||
+      element.lastName.toUpperCase().includes(search)
     );
     setFilteredChatList(filteredArray);
     if (search === "") {
-      setFilteredChatList(recentChatList);
+      setFilteredChatList(connectedUsers);
     }
   };
 
   const openUserChat = (e, chat) => {
     e.preventDefault();
-    const index = recentChatList.indexOf(chat);
-    activeUser(index);
+    const index = connectedUsers.indexOf(chat);
+    userOnline(index);
     const chatList = document.getElementById("chat-list");
     let currentli = null;
 
@@ -123,9 +164,10 @@ const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, act
             className="list-unstyled chat-list chat-user-list"
             id="chat-list"
           >
-            {recentChatList?.map((chat, key) => (
+            {console.log("connectedUSers",connectedUsers)}
+            {connectedUsers?.map((chat, key) => (
 
-              <ChatItem key={key} chat={chat} active_user={active_user} openUserChat={openUserChat} />
+              <ChatItem key={key} chat={chat} active_user={activeChat} openUserChat={openUserChat} />
 
             ))}
           </ul>
@@ -138,11 +180,8 @@ const Chats = ({ recentChatList, active_user, setconversationNameInOpenChat, act
 }
 
 const mapStateToProps = (state) => {
-  const { userOnline } = state.user;
-  return { userOnline };
+  const {activeChat, userOnline ,connectedUsers} = state.user;
+  return { userOnline ,activeChat,connectedUsers};
 };
 
-export default connect(mapStateToProps, {
-  setconversationNameInOpenChat,
-  activeUser,
-})(Chats);
+export default connect(mapStateToProps)(Chats);

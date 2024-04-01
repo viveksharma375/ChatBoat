@@ -18,7 +18,7 @@ const ChatItem=({chat,active_user,openUserChat}) =>{
   >
     <Link to="#" onClick={(e) => openUserChat(e, chat)}>
       <div className="d-flex">
-        {chat.profilePicture === "Null" ? (
+        {chat.profilePath === null ? (
           <div
             className={
               "chat-user-img " +
@@ -28,7 +28,7 @@ const ChatItem=({chat,active_user,openUserChat}) =>{
           >
             <div className="avatar-xs">
               <span className="avatar-title rounded-circle bg-soft-primary text-primary">
-                {chat.name.charAt(0)}
+                {chat.firstName.charAt(0)}{chat.lastName.charAt(0)}
                 
               </span>
             </div>
@@ -45,7 +45,7 @@ const ChatItem=({chat,active_user,openUserChat}) =>{
             }
           >
             <img
-              src={chat.profilePicture}
+              src={chat.profilePath}
               className="rounded-circle avatar-xs"
               alt="pic"
             />
@@ -55,10 +55,10 @@ const ChatItem=({chat,active_user,openUserChat}) =>{
 
         <div className="flex-grow-1 overflow-hidden">
           <h5 className="text-truncate font-size-15 mb-1">
-            {chat.name}
+            {chat.firstName}
           </h5>
           <p className="chat-user-message text-truncate mb-0">
-            {chat.isTyping ? (
+            {chat?.isTyping ? (
               <>
                 typing
                 <span className="animate-typing">

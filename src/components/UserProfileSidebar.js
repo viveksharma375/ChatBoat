@@ -10,7 +10,6 @@ import AttachedFiles from "./AttachedFiles";
 import CustomCollapse from "./CustomCollapse";
 
 //actions
-import { closeUserSidebar } from "../redux/actions";
 
 //i18n
 import { useTranslation } from "react-i18next";
@@ -52,7 +51,7 @@ const  UserProfileSidebar=(props) =>{
 
   // closes sidebar
   const closeuserSidebar = () => {
-    props.closeUserSidebar();
+    // props.closeUserSidebar();
   };
   return (
     <div
@@ -276,6 +275,6 @@ const mapStateToProps = (state) => {
   return {userOnline, activeTab };
 };
 
-export default connect(mapStateToProps, { closeUserSidebar })(
+export default connect(mapStateToProps)(
   UserProfileSidebar
 );

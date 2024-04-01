@@ -81,8 +81,11 @@ const Login = (props) => {
           dispatch(userData({
             user:response.message.data,
           }))
-          props.router.navigate("/dashboard")
         }
+        
+
+
+        props.router.navigate("/dashboard")
       }
      
      

@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import withRouter from "../../components/withRouter";
+import { logoutUser } from '../../redux/slice.auth';
 
-//redux store
-import { logoutUser } from '../../redux/actions';
 
 /**
  * Logouts the user
@@ -16,9 +15,10 @@ const Logout = (props) => {
         token: state.user.token,
       }));
 
-    useEffect(() => {
-        dispatch(logoutUser(props.router.navigate));
-    }, [dispatch, props.router.navigate]);
+    useEffect(()=>{
+      dispatch(logoutUser());
+    },[dispatch,props.router.navigate])
+ 
 
     if (token) {
         console.log("isUserLogout",token)
@@ -28,4 +28,4 @@ const Logout = (props) => {
     return (<></>)
 }
 
-export default withRouter(connect(null, { logoutUser })(Logout));
+export default withRouter(connect(null)(Logout));

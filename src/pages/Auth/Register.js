@@ -22,7 +22,7 @@ import {
 } from "reactstrap";
 
 //Import action
-import { registerUser, apiError } from "../../redux/actions";
+
 
 //i18n
 import { useTranslation } from "react-i18next";
@@ -40,13 +40,8 @@ const Register = (props) => {
   /* intilize t variable for multi language implementation */
   const { t } = useTranslation();
 
-  const clearError = useCallback(() => {
-    dispatch(apiError(""));
-  }, [dispatch]);
 
-  useEffect(() => {
-    clearError();
-  }, [clearError]);
+
 
   // validation
   const formik = useFormik({
@@ -385,5 +380,5 @@ const mapStateToProps = (state) => {
 };
 
 export default withRouter(
-  connect(mapStateToProps, { registerUser, apiError })(Register)
+  connect(mapStateToProps)(Register)
 );

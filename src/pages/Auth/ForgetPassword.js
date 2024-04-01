@@ -7,9 +7,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Container, Row, Col, Card, CardBody, FormGroup, Alert, Form, Input, Button, FormFeedback, Label, InputGroup } from 'reactstrap';
 
-//Import actions and helpers
-import { forgetPassword, apiError } from '../../redux/actions';
-
 //i18n
 import { useTranslation } from 'react-i18next';
 
@@ -23,14 +20,12 @@ import logolight from "../../assets/images/logo-light.png";
  */
 const ForgetPassword = (props) => {
 
-    const clearError = () => {
-        props.apiError("");
-    }
+   
 
     /* intilize t variable for multi language implementation */
     const { t } = useTranslation();
 
-    useEffect(clearError);
+   
 
     // validation
     const formik = useFormik({
@@ -42,7 +37,7 @@ const ForgetPassword = (props) => {
                 .required('Required')
         }),
         onSubmit: values => {
-            props.forgetPassword(values.email);
+            // props.forgetPassword(values.email);
         },
     });
 
@@ -129,4 +124,4 @@ const mapStateToProps = (state) => {
     return { user};
 };
 
-export default connect(mapStateToProps, { forgetPassword, apiError })(ForgetPassword);
+export default connect(mapStateToProps)(ForgetPassword);

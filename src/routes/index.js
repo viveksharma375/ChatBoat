@@ -17,6 +17,7 @@ const AuthProtected = (props) => {
       Navigate is un-auth access protected routes via url
       */
      const token = useSelector((state)=>state.user.token)
+     console.log("token is ",token)
       if (props.isAuthProtected && token==null) {
             return (
                 <Navigate to={{ pathname: "/login", state: { from: props.location } }} />

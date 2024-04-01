@@ -15,13 +15,13 @@ const NonAuth =(props)=> {
 
     useEffect(() => {
         dispatch(userLayout({
-            layout:layout|| props.layout.layoutMode
+            layout:layout
         }))
 
         const currentage = capitalizeFirstLetter(props.router.location.pathname);
         document.title = currentage + ' | Chatvia - Responsive Bootstrap 5 Admin Dashboard';
 
-    }, [dispatch,layout, props.layout.layoutMode, props.router.location.pathname]);
+    }, [dispatch,layout, props.router.location.pathname]);
 
         return <React.Fragment>
             {props.children}
