@@ -8,7 +8,7 @@ const initialState = {
   connectedUsers: [],
   groups: [],
   layout: "light",
-  activeTab: null,
+  activeTab: "chat",
   activeChat: null,
   allUser: [],
 };
@@ -30,7 +30,11 @@ const userSlice = createSlice({
     },
     userList: (state, action) => {
       state.userOnline = action.payload.userOnline;
-      state.chats = action.payload.userChats;
+    },
+    userChats: (state, action) => {
+      state.chats = action.payload.chats;
+    },
+    userGroups: (state, action) => {
       state.groups = action.payload.groups;
     },
     userLayout: (state, action) => {
@@ -75,6 +79,8 @@ export const {
   userActiveChat,
   userAll,
   userConnected,
+  userChats,
+  userGroups,
 } = userSlice.actions;
 
 export default userSlice.reducer;

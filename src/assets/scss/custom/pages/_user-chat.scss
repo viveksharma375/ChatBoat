@@ -219,7 +219,7 @@
                     order: 2;
                     background-color: $chat-secondary-bg;
                     color: var(--#{$variable-prefix}dark);
-                    text-align: right;
+                    text-align: left;
                     border-radius: 8px 8px 0px 8px;
 
                     &:before {

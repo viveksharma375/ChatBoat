@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Card, Button, UncontrolledDropdown, Input, Label, Form } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -41,6 +41,7 @@ const Settings = () => {
         about:"",
     });
     const token = useSelector((state)=>state.user.token)
+    const fileInputRef = useRef(null);
     const apiInstance = new API();
     /* intilize t variable for multi language implementation */
     const { t } = useTranslation();
@@ -150,6 +151,10 @@ const Settings = () => {
         fetchDetails();
     }, [])
 
+    const handleClickProfilePic=()=>{
+        fileInputRef.current.click();
+    }
+
 
 
 
@@ -169,8 +174,8 @@ const Settings = () => {
 
                                     className="rounded-circle avatar-lg img-thumbnail"
                                     alt={profile.firstName}
-                                    onClick={() => toggleLightbox(currentImage)}
-
+                                    onClick={handleClickProfilePic}
+                                    style={{cursor:"pointer"}}
                                 />
                             </div>
                             :
@@ -191,77 +196,174 @@ const Settings = () => {
 
                         {/* <Button type="button" color="light" className="avatar-xs p-0 align-items-center rounded-circle profile-photo-edit"> */}
                         {/* <Form onSubmit={handleUpload} encType="multipart/form-data"> */}
-                        <Label for="profilePicture" color="light" className="avatar-xs bg-light p-0 align-items-center rounded-circle profile-photo-edit">
-                            <i className="ri-pencil-fill"></i></Label>
-                        <input id="profilePicture" onChange={handleFileChange} type="file" accept="image/*" name="profilePicture" />
-                        {showBTN && <Button onClick={handleUpload} className="avatar-xs  p-0 align-items-center "><i className='ri-upload-fill'></i></Button>}
-                        {/* </Button> */}
-                        {/* </Form> */}
-
-
-                    </div>
-
-                    <h5 className="font-size-16 mb-1 text-truncate">{t(profile.firstName + " " + profile.lastName)}</h5>
-                    <Dropdown isOpen={dropdownOpen} toggle={toggle} className="d-inline-block mb-1">
-                        <DropdownToggle tag="a" className="text-muted pb-1 d-block" >
-                            {t('Available')} <i className="mdi mdi-chevron-down"></i>
-                        </DropdownToggle>
-
-                        <DropdownMenu>
-                            <DropdownItem>{t('Available')}</DropdownItem>
-                            <DropdownItem>{t('Busy')}</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
+                        <input
+                id="profilePicture"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                type="file"
+                accept="image/*"
+                name="profilePicture"
+                style={{ display: "none" }} // Hide file input
+              />
+              {showBTN && (
+                <Button onClick={handleUpload} className="p-1 h-4">
+                  Set Profile
+                </Button>
+              )}
+            </div>
+            {/* //TODO change> */}
+            <h5 className="font-size-16 mb-1 text-truncate">
+              {t(profile.firstName + " " + profile.lastName)}
+            </h5>
+            <UncontrolledDropdown
+              className="ms-2"
+              isOpen={dropdownOpen}
+              toggle={toggle}
+            >
+              <DropdownToggle
+                className="btn btn-light btn-sm w-sm"
+                tag="button"
+                onClick={toggle}
+              >
+                {t("Available")} <i className="mdi mdi-chevron-down"></i>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-end">
+                <DropdownItem>{t("Available")}</DropdownItem>
+                <DropdownItem>{t("Busy")}</DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
                 {/* End profile user */}
 
                 {/* Start User profile description */}
-                <SimpleBar style={{ maxHeight: "100%" }} className="p-4 user-profile-desc">
+                <SimpleBar className="p-4 user-profile-desc mh-100">
 
-                    <div id="profile-setting-accordion" className="custom-accordion">
-                        <Card className="shadow-none border mb-2">
-                            {/* <Form onSubmit={handleSubmit}> */}
-                                <CustomCollapse
-                                    title="Personal Info"
-                                    isOpen={isOpen1}
-                                    toggleCollapse={toggleCollapse1}
-                                >
-                                    {!toggleButton ?
-                                        <div className="float-end">
-                                            <Button onClick={toggleEdit} color="light" size="sm" type="button" ><i className="ri-edit-fill me-1 align-middle"></i> {t('Edit')}</Button>
-                                        </div>
-                                        :
-                                        <div className="float-end">
-                                            <Button  onClick={handleSubmit} color="light" size="sm" ><i className="ri-save-fill me-1 align-middle"></i> {t('Save')}</Button>
-                                        </div>
-                                    }
-                                    <div>
-                                        <p className="text-muted mb-1">{t('FirstName')}</p>
-                                        <Input type="text"  name="firstName" disabled={!toggleButton} onChange={handleInputChange} className="font-size-14" value={t(formData.firstName)}></Input >
-                                    </div>
-                                    <div>
-                                        <p className="text-muted mb-1">{t('Last Name')}</p>
-                                        <Input type="text"  name="lastName" disabled={!toggleButton} onChange={handleInputChange} className="font-size-14" value={t(formData.lastName)}></Input >
-                                    </div>
+                <div id="profile-setting-accordion" className="custom-accordion">
+              <Card className="shadow-none border mb-2">
+                {/* <Form onSubmit={handleSubmit}> */}
+                <CustomCollapse
+                  title="Personal Info"
+                  isOpen={isOpen1}
+                  toggleCollapse={toggleCollapse1}
+                >
+                  {!toggleButton ? (
+                    <div className="float-end m-1">
+                      <Button
+                        onClick={toggleEdit}
+                        color="light"
+                        size="sm"
+                        type="button"
+                      >
+                        <i className="ri-edit-fill me-1 align-middle"></i>{" "}
+                        {t("Edit")}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="float-end">
+                      <Button onClick={handleSubmit} color="light" size="sm">
+                        <i className="ri-save-fill me-1 align-middle"></i>{" "}
+                        {t("Save")}
+                      </Button>
+                    </div>
+                  )}
+                  <div>
+                    <div className="py-3">
+                      <div className="d-flex align-items-center">
+                        <div className="flex-grow-1 overflow-hidden">
+                          <h5 className="font-size-13 mb-0 text-truncate">
+                            {t("First Name")}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
 
-                                    <div className="mt-4">
-                                        <p className="text-muted mb-1">{t('Email')}</p>
-                                        <Input type="text" name="email"  disabled={true} className="font-size-14" value={t(formData.email)}></Input >
-                                    </div>
+                    <Input
+                      type="text"
+                      name="firstName"
+                      disabled={!toggleButton}
+                      onChange={handleInputChange}
+                      className="font-size-14"
+                      value={t(formData.firstName)}
+                    ></Input>
+                  </div>
+                  <div>
+                    <div className="py-3">
+                      <div className="d-flex align-items-center">
+                        <div className="flex-grow-1 overflow-hidden">
+                          <h5 className="font-size-13 mb-0 text-truncate">
+                            {t("Last Name")}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <Input
+                      type="text"
+                      name="lastName"
+                      disabled={!toggleButton}
+                      onChange={handleInputChange}
+                      className="font-size-14"
+                      value={t(formData.lastName)}
+                    ></Input>
+                  </div>
+                  <div className="mt-4">
+                    <div className="py-3">
+                      <div className="d-flex align-items-center">
+                        <div className="flex-grow-1 overflow-hidden">
+                          <h5 className="font-size-13 mb-0 text-truncate">
+                            {t("Email")}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <Input
+                      type="text"
+                      name="email"
+                      disabled={true}
+                      className="font-size-14"
+                      value={t(formData.email)}
+                    ></Input>
+                  </div>
 
-                                    <div className="mt-4">
-                                        <p className="text-muted mb-1">{t('Phone Number')}</p>
-                                        <Input type="text"  name="phoneNumber" disabled={true}  className="font-size-14" value={t(formData.phoneNumber)}></Input >
-                                    </div>
-                                    <div className="mt-4">
-                                        <p className="text-muted mb-1">{t('About')}</p>
-                                        <Input type="text"  name="about" disabled={!toggleButton}  onChange={handleInputChange} className="font-size-14" value={t(formData.about)}></Input >
-                                    </div>
-
-                                   
-                                </CustomCollapse>
-                            {/* </Form> */}
-                        </Card>
+                  <div className="mt-4">
+                    <div className="py-3">
+                      <div className="d-flex align-items-center">
+                        <div className="flex-grow-1 overflow-hidden">
+                          <h5 className="font-size-13 mb-0 text-truncate">
+                            {t("Phone Number")}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <Input
+                      type="text"
+                      name="phoneNumber"
+                      disabled={true}
+                      className="font-size-14"
+                      value={t(formData.phoneNumber)}
+                    ></Input>
+                  </div>
+                  <div className="mt-4">
+                    <div className="py-3">
+                      <div className="d-flex align-items-center">
+                        <div className="flex-grow-1 overflow-hidden">
+                          <h5 className="font-size-13 mb-0 text-truncate">
+                            {t("About")}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <Input
+                      type="text"
+                      name="about"
+                      disabled={!toggleButton}
+                      onChange={handleInputChange}
+                      className="font-size-14"
+                      value={t(formData.about)}
+                    ></Input>
+                  </div>
+                </CustomCollapse>
+                {/* </Form> */}
+              </Card>
                         {/* end profile card */}
 
                         <Card className="shadow-none border mb-2">
@@ -359,7 +461,7 @@ const Settings = () => {
                         </Card>
                         {/* end Privacy card */}
 
-                        <Card className="accordion-item border mb-2">
+                        <Card className="shadow-none border mb-2">
                             <CustomCollapse
                                 title="Security"
                                 isOpen={isOpen3}

@@ -6,14 +6,11 @@ import { connect, useDispatch } from "react-redux";
 //simplebar
 import SimpleBar from "simplebar-react";
 
-//actions
-
-
 //components
 import OnlineUsers from "./OnlineUsers";
 import ChatItem from "../../../components/chatItem";
 import { socket } from "../../../helpers/socket";
-import { userActiveChat, userConnected } from "../../../redux/slice.auth";
+import { userActiveChat, userChats, userConnected } from "../../../redux/slice.auth";
 
 const Chats = ({ connectedUsers, activeChat }) => {
   const [searchChat, setSearchChat] = useState("");
@@ -21,18 +18,15 @@ const Chats = ({ connectedUsers, activeChat }) => {
   const dispatch = useDispatch();
 
   //TODO hadnlemesgg
-  const setMessageData=(data)=>{
-    console.log("MESHSDFJSJDFDF",data)
-    
-    
-  }
 
-  const setContactData=(data)=>{
-    dispatch(userConnected({
-      connectedUsers:data
-    }))
-    
-  }
+
+  const setContactData = (data) => {
+    dispatch(
+      userConnected({
+        connectedUsers: data,
+      })
+    );
+  };
   useEffect(() => {
     var li = document.getElementById(activeChat);
     if (li) {
@@ -41,41 +35,28 @@ const Chats = ({ connectedUsers, activeChat }) => {
   }, [activeChat]);
 
   useEffect(() => {
-   
-
     setFilteredChatList(connectedUsers);
   }, [connectedUsers]);
 
-  
-  useEffect(()=>{
-    socket.emit("fetch_message");
+  useEffect(() => {
     socket.emit("fetchAllConnection");
-    socket.on("user_message_data",setMessageData)
-    socket.on("user_connect_data",setContactData)
-    
+   
+    socket.on("user_connect_data", setContactData);
+
     return () => {
-      socket.off("user_message_data",setMessageData)
-      socket.off("user_connect_data",setContactData)
-      socket.off("fetch_message")
-      socket.off("fetchAllConnection")
-
-  }
-  },[])
-
-
-
-
-
-
-
-
+   
+      socket.off("user_connect_data", setContactData);
+      socket.off("fetchAllConnection");
+    };
+  }, []);
 
   const handleChange = (e) => {
     setSearchChat(e.target.value);
     const search = e.target.value.toLowerCase();
-    const filteredArray = connectedUsers.filter((element) =>
-      element.firstName.toLowerCase().includes(search) ||
-      element.lastName.toUpperCase().includes(search)
+    const filteredArray = connectedUsers.filter(
+      (element) =>
+        element.firstName.toLowerCase().includes(search) ||
+        element.lastName.toUpperCase().includes(search)
     );
     setFilteredChatList(filteredArray);
     if (search === "") {
@@ -86,11 +67,13 @@ const Chats = ({ connectedUsers, activeChat }) => {
   const openUserChat = (e, chat) => {
     e.preventDefault();
     const index = connectedUsers.indexOf(chat);
-    console.log("indexxxxx",index)
-    dispatch(userActiveChat({
-      activeChat:chat
-    }))
-    
+    console.log("indexxxxx", chat);
+    dispatch(
+      userActiveChat({
+        activeChat: chat,
+      })
+    );
+
     const chatList = document.getElementById("chat-list");
     let currentli = null;
 
@@ -124,10 +107,7 @@ const Chats = ({ connectedUsers, activeChat }) => {
     }
   };
 
-
-
   return (
-
     <div>
       <div className="px-4 pt-4">
         <h4 className="mb-4">Chats</h4>
@@ -157,19 +137,15 @@ const Chats = ({ connectedUsers, activeChat }) => {
       {/* Start chat-message-list  */}
       <div className="px-2">
         <h5 className="mb-3 px-3 font-size-16">Recent</h5>
-        <SimpleBar
-          style={{ maxHeight: "100%" }}
-          className="chat-message-list"
-        >
-
-          <ul
-            className="list-unstyled chat-list chat-user-list"
-            id="chat-list"
-          >
+        <SimpleBar style={{ maxHeight: "100%" }} className="chat-message-list">
+          <ul className="list-unstyled chat-list chat-user-list" id="chat-list">
             {connectedUsers?.map((chat, key) => (
-
-              <ChatItem key={key} chat={chat} active_user={activeChat} openUserChat={openUserChat} />
-
+              <ChatItem
+                key={key}
+                chat={chat}
+                active_user={activeChat}
+                openUserChat={openUserChat}
+              />
             ))}
           </ul>
         </SimpleBar>
@@ -177,12 +153,11 @@ const Chats = ({ connectedUsers, activeChat }) => {
       {/* End chat-message-list */}
     </div>
   );
-
-}
+};
 
 const mapStateToProps = (state) => {
-  const {activeChat ,connectedUsers} = state.user;
-  return { activeChat,connectedUsers};
+  const { activeChat, connectedUsers } = state.user;
+  return { activeChat, connectedUsers };
 };
 
 export default connect(mapStateToProps)(Chats);

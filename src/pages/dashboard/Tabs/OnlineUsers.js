@@ -5,11 +5,7 @@ import { Link } from "react-router-dom";
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
 
-//Import Images
-import avatar2 from "../../../assets/images/users/avatar-2.jpg";
-import avatar4 from "../../../assets/images/users/avatar-4.jpg";
-import avatar5 from "../../../assets/images/users/avatar-5.jpg";
-import avatar6 from "../../../assets/images/users/avatar-6.jpg";
+
 import { socket } from "../../../helpers/socket";
 import OnlineUserItem from "../../../components/onlineUserItem";
 import { useSelector } from "react-redux";

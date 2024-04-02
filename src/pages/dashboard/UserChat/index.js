@@ -11,7 +11,8 @@ import {
   Button,
   ModalFooter,
 } from "reactstrap";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 import SimpleBar from "simplebar-react";
 
@@ -27,84 +28,131 @@ import FileList from "./FileList";
 
 //actions
 
-//Import Images
-import avatar4 from "../../../assets/images/users/avatar-4.jpg";
-import avatar1 from "../../../assets/images/users/avatar-1.jpg";
-
 //i18n
 import { useTranslation } from "react-i18next";
+import { socket } from "../../../helpers/socket";
+import { userChats } from "../../../redux/slice.auth";
+import config from "../../../config";
+import { format } from "date-fns";
 
 const UserChat = (props) => {
   const ref = useRef();
-
   const [modal, setModal] = useState(false);
 
   /* intilize t variable for multi language implementation */
   const { t } = useTranslation();
-
+  const dispatch = useDispatch();
   //demo conversation messages
   //userType must be required
   const [allUsers] = useState(props.recentChatList);
-  const [chatMessages, setchatMessages] = useState(null);
+  const [chatMessages, setchatMessages] = useState([]);
+
+  const setMessageData = (data) => {
+    console.log("MESHSDFJSJDFDF", data);
+    dispatch(
+      userChats({
+        chats:data,
+      })
+    );
+  };
+
+  const handleIncomingMessage = (data) => {
+    console.log("handleIncomingMessage", data);
+    console.log("props.activeChat?.id ",props.activeChat?.id)
+    console.log("props.activeChat?.id === data.id",props.activeChat?.id === data.author)
+    if (props.activeChat?.id === data.author ) {
+      setchatMessages([...chatMessages, data])
+      dispatch(
+        userChats({
+          chats: [...chatMessages, data],
+        })
+      );
+    }
+  };
+
+  const fetchChats = () => {
+    console.log("filteredChats ", props.chats);
+    setchatMessages(props.chats);
+  };
+
+  // Generate a UUID
+  function generateMessageId() {
+    return uuidv4();
+  }
+  socket.on("message", handleIncomingMessage);
 
   useEffect(() => {
-    setchatMessages(props.chats[props.activeChat?.id]);
+    if (props.activeChat?.id) {
+      socket.emit("fetch_message", props.activeChat.id);
+    }
+    socket.on("user_message_data", setMessageData);
+    return () => {
+      socket.off("fetch_message");
+      socket.off("user_message_data");
+      socket.off("message");
+    };
+  }, [props.activeChat?.id]);
+
+  // useEffect(()=>{
+  //   dispatch(
+  //       userChats({
+  //         chats: chatMessages,
+  //       })
+  //     );
+  // },[dispatch,chatMessages])
+
+  useEffect(() => {
+    fetchChats()
     ref.current.recalculate();
     if (ref.current.el) {
       ref.current.getScrollElement().scrollTop =
         ref.current.getScrollElement().scrollHeight;
     }
-  }, [props.active_user, props.recentChatList]);
+  }, [dispatch,chatMessages, props.activeChat?.id, props.chats]);
 
   const toggle = () => setModal(!modal);
 
-  const addMessage = (message, type) => {
-    var messageObj = null;
-
-    let d = new Date();
-    var n = d.getSeconds();
+  const addMessage = (message, type, id) => {
+    let messageObj = null;
+    console.log("obj jjjjjjjj", message);
+    let d = new Date().toISOString();
 
     //matches the message type is text, file or image, and create object according to it
     switch (type) {
       case "textMessage":
         messageObj = {
-          id: chatMessages.length + 1,
+          id: generateMessageId(),
           message: message,
-          time: "00:" + n,
-          userType: "sender",
-          image: avatar4,
+          timestamp: d,
+          author: props.user.id,
           isFileMessage: false,
           isImageMessage: false,
+          seen: false,
         };
         break;
 
       case "fileMessage":
         messageObj = {
-          id: chatMessages.length + 1,
-          message: "file",
-          fileMessage: message.name,
-          size: message.size,
-          time: "00:" + n,
-          userType: "sender",
-          image: avatar4,
+          id: generateMessageId(),
+          message: message,
+          timestamp: d,
+          author: props.user.id,
           isFileMessage: true,
           isImageMessage: false,
+          seen: false,
         };
         break;
 
       case "imageMessage":
-        var imageMessage = [{ image: message }];
-
+        let imageMessage = [{ image: message }];
         messageObj = {
-          id: chatMessages.length + 1,
-          message: "image",
-          imageMessage: imageMessage,
-          size: message.size,
-          time: "00:" + n,
-          userType: "sender",
-          image: avatar4,
+          id: generateMessageId(),
+          message: imageMessage,
+          timestamp: d,
+          author: id,
           isImageMessage: true,
           isFileMessage: false,
+          seen: false,
         };
         break;
 
@@ -114,16 +162,23 @@ const UserChat = (props) => {
 
     //add message object to chat
     setchatMessages([...chatMessages, messageObj]);
+    socket.emit("message_send", messageObj, props.activeChat.id);
+    dispatch(
+      userChats({
+        chats: [...chatMessages, messageObj],
+      })
+    );
 
-    let copyallUsers = [...allUsers];
-    copyallUsers[props.active_user].messages = [...chatMessages, messageObj];
-    copyallUsers[props.active_user].isTyping = false;
-    props.setFullUser(copyallUsers);
+    // let copyallUsers = [...allUsers];
+    // copyallUsers[props.active_user].messages = [...chatMessages, messageObj];
+    // copyallUsers[props.active_user].isTyping = false;
+    // props.setFullUser(copyallUsers);
 
     scrolltoBottom();
   };
 
   function scrolltoBottom() {
+    console.log("refsfsfnsdffff", ref.current.getScrollElement());
     if (ref.current.el) {
       ref.current.getScrollElement().scrollTop =
         ref.current.getScrollElement().scrollHeight;
@@ -150,64 +205,66 @@ const UserChat = (props) => {
           <SimpleBar
             style={{ maxHeight: "100%" }}
             ref={ref}
-            className="chat-conversation p-3 p-lg-4"
+            className="chat-conversation p-3 p-lg-4 "
             id="messages"
           >
             <ul className="list-unstyled mb-0">
               {chatMessages?.map((chat, key) =>
-                chat.isToday && chat.isToday === true ? (
+                new Date(chat.timeStamp).toDateString() ===
+                new Date().toDateString() ? (
                   <li key={"dayTitle" + key}>
                     <div className="chat-day-title">
                       <span className="title">Today</span>
                     </div>
                   </li>
-                ) : props.recentChatList[props.active_user].isGroup === true ? (
+                ) : props.recentChatList[props.active_user]?.isGroup ===
+                  true ? (
                   <li
                     key={key}
                     className={chat.userType === "sender" ? "right" : ""}
                   >
                     <div className="conversation-list">
                       <div className="chat-avatar">
-                        {chat.userType === "sender" ? (
-                          <img src={avatar1} alt="chatvia" />
-                        ) : props.recentChatList[props.active_user]
-                            .profilePicture === "Null" ? (
+                        {chat.author === props.user?.id ? (
+                          <img
+                            src={`${config.BASE_URL}${props.user?.profilePath}`}
+                            alt="chatvia"
+                          />
+                        ) : props.activeChat?.profilePath === null ? (
                           <div className="chat-user-img align-self-center me-3">
                             <div className="avatar-xs">
                               <span className="avatar-title rounded-circle bg-soft-primary text-primary">
-                                {chat.userName && chat.userName.charAt(0)}
+                                {props.activeChat.firstName.charAt(0)}
+                                {props.activeChat.lastName.charAt(0)}
                               </span>
                             </div>
                           </div>
                         ) : (
                           <img
-                            src={
-                              props.recentChatList[props.active_user]
-                                .profilePicture
-                            }
+                            src={`${config.BASE_URL}${props.activeChat?.profilePath}`}
                             alt="chatvia"
                           />
                         )}
                       </div>
 
-                      <div className="user-chat-content">
-                        <div className="ctext-wrap">
+                      <div className="user-chat-content text-break " style={{maxWidth:"450px"}}>
+                        <div className="ctext-wrap " >
                           <div className="ctext-wrap-content">
                             {chat.message && (
                               <p className="mb-0">{chat.message}</p>
                             )}
-                            {chat.imageMessage && (
+                            {chat?.isImageMessage && (
                               // image list component
-                              <ImageList images={chat.imageMessage} />
+                              <ImageList images={chat.message} />
                             )}
-                            {chat.fileMessage && (
+                            {chat?.isFileMessage && (
                               //file input component
                               <FileList
-                                fileName={chat.fileMessage}
-                                fileSize={chat.size}
+                                fileName={chat?.fileMessage}
+                                fileSize={chat?.size}
                               />
                             )}
-                            {chat.isTyping && (
+                            {chat?.isTyping && (
                               <p className="mb-0">
                                 typing
                                 <span className="animate-typing">
@@ -217,16 +274,16 @@ const UserChat = (props) => {
                                 </span>
                               </p>
                             )}
-                            {!chat.isTyping && (
+                            {!chat?.isTyping && (
                               <p className="chat-time mb-0">
                                 <i className="ri-time-line align-middle"></i>{" "}
                                 <span className="align-middle">
-                                  {chat.time}
+                                  {format(new Date(chat.timestamp), "HH:mm a")}
                                 </span>
                               </p>
                             )}
                           </div>
-                          {!chat.isTyping && (
+                          {!chat?.isTyping && (
                             <UncontrolledDropdown className="align-self-start">
                               <DropdownToggle tag="a">
                                 <i className="ri-more-2-fill"></i>
@@ -254,77 +311,72 @@ const UserChat = (props) => {
                             </UncontrolledDropdown>
                           )}
                         </div>
-                        {
-                          <div className="conversation-name">
-                            {chat.userType === "sender"
-                              ? "Patricia Smith"
-                              : chat.userName}
-                          </div>
-                        }
+
+                        <div className="conversation-name">
+                          {chat?.author === props.user.id
+                            ? `${props.user.firstName} ${props.user.lastName}`
+                            : `${props.activeChat.firstName} ${props.activeChat.lastName}`}
+                        </div>
                       </div>
                     </div>
                   </li>
                 ) : (
                   <li
                     key={key}
-                    className={chat.userType === "sender" ? "right" : ""}
+                    className={chat?.author === props.user.id ? "right" : ""}
                   >
                     <div className="conversation-list">
                       {
                         //logic for display user name and profile only once, if current and last messaged sent by same receiver
                         chatMessages[key + 1] ? (
-                          chatMessages[key].userType ===
-                          chatMessages[key + 1].userType ? (
+                          chatMessages[key].author ===
+                          chatMessages[key + 1].author ? (
                             <div className="chat-avatar">
                               <div className="blank-div"></div>
                             </div>
                           ) : (
                             <div className="chat-avatar">
-                              {chat.userType === "sender" ? (
-                                <img src={avatar1} alt="chatvia" />
-                              ) : props.recentChatList[props.active_user]
-                                  .profilePicture === "Null" ? (
+                              {chat?.author === props.user.id ? (
+                                <img
+                                  src={`${config.BASE_URL}${props.user.profilePath}`}
+                                  alt="chatvia"
+                                />
+                              ) : props.activeChat?.profilePath === null ? (
                                 <div className="chat-user-img align-self-center me-3">
                                   <div className="avatar-xs">
                                     <span className="avatar-title rounded-circle bg-soft-primary text-primary">
-                                      {props.recentChatList[
-                                        props.active_user
-                                      ].name.charAt(0)}
+                                      {props.activeChat.firstName.charAt(0)}
+                                      {props.activeChat.lastName.charAt(0)}
                                     </span>
                                   </div>
                                 </div>
                               ) : (
                                 <img
-                                  src={
-                                    props.recentChatList[props.active_user]
-                                      .profilePicture
-                                  }
-                                  alt="chatvia"
+                                  src={`${config.BASE_URL}${props.activeChat?.profilePath}`}
+                                  alt="cha"
                                 />
                               )}
                             </div>
                           )
                         ) : (
                           <div className="chat-avatar">
-                            {chat.userType === "sender" ? (
-                              <img src={avatar1} alt="chatvia" />
-                            ) : props.recentChatList[props.active_user]
-                                .profilePicture === "Null" ? (
+                            {chat.author === props.user.id ? (
+                              <img
+                                src={`${config.BASE_URL}${props.user.profilePath} `}
+                                alt="chatvia"
+                              />
+                            ) : props.activeChat?.profilePath === null ? (
                               <div className="chat-user-img align-self-center me-3">
                                 <div className="avatar-xs">
                                   <span className="avatar-title rounded-circle bg-soft-primary text-primary">
-                                    {props.recentChatList[
-                                      props.active_user
-                                    ].name.charAt(0)}
+                                    {props.activeChat?.firstName.charAt(0)}
+                                    {props.activeChat?.lastName.charAt(0)}
                                   </span>
                                 </div>
                               </div>
                             ) : (
                               <img
-                                src={
-                                  props.recentChatList[props.active_user]
-                                    .profilePicture
-                                }
+                                src={`${config.BASE_URL}${props.activeChat?.profilePath}`}
                                 alt="chatvia"
                               />
                             )}
@@ -332,24 +384,24 @@ const UserChat = (props) => {
                         )
                       }
 
-                      <div className="user-chat-content">
+                      <div className="user-chat-content text-break  " style={{maxWidth:"450px"}}>
                         <div className="ctext-wrap">
-                          <div className="ctext-wrap-content">
+                          <div className="ctext-wrap-content ">
                             {chat.message && (
                               <p className="mb-0">{chat.message}</p>
                             )}
-                            {chat.imageMessage && (
+                            {chat.isImageMessage && (
                               // image list component
-                              <ImageList images={chat.imageMessage} />
+                              <ImageList images={chat.message} />
                             )}
-                            {chat.fileMessage && (
+                            {chat.isFileMessage && (
                               //file input component
                               <FileList
-                                fileName={chat.fileMessage}
-                                fileSize={chat.size}
+                                fileName={chat?.fileMessage}
+                                fileSize={chat?.size}
                               />
                             )}
-                            {chat.isTyping && (
+                            {chat?.isTyping && (
                               <p className="mb-0">
                                 typing
                                 <span className="animate-typing">
@@ -359,16 +411,17 @@ const UserChat = (props) => {
                                 </span>
                               </p>
                             )}
-                            {!chat.isTyping && (
+                            {!chat?.isTyping && (
                               <p className="chat-time mb-0">
                                 <i className="ri-time-line align-middle"></i>{" "}
                                 <span className="align-middle">
-                                  {chat.time}
+                                  
+                                  {format(new Date(chat.timestamp), "HH:mm a")}
                                 </span>
                               </p>
                             )}
                           </div>
-                          {!chat.isTyping && (
+                          {!chat?.isTyping && (
                             <UncontrolledDropdown className="align-self-start">
                               <DropdownToggle tag="a">
                                 <i className="ri-more-2-fill"></i>
@@ -401,19 +454,19 @@ const UserChat = (props) => {
                           )}
                         </div>
                         {chatMessages[key + 1] ? (
-                          chatMessages[key].userType ===
-                          chatMessages[key + 1].userType ? null : (
+                          chatMessages[key].author ===
+                          chatMessages[key + 1].author ? null : (
                             <div className="conversation-name">
-                              {chat.userType === "sender"
-                                ? "Patricia Smith"
-                                : props.recentChatList[props.active_user].name}
+                              {chat.author === props.user.id
+                                ? props.user.firstName
+                                : props.activeChat?.firstName}
                             </div>
                           )
                         ) : (
                           <div className="conversation-name">
-                            {chat.userType === "sender"
+                            {chat.author === props.user.id
                               ? "Admin"
-                              : props.recentChatList[props.active_user].name}
+                              : props.activeChat?.firstName}
                           </div>
                         )}
                       </div>
@@ -437,9 +490,9 @@ const UserChat = (props) => {
               </CardBody>
             </ModalBody>
           </Modal>
-          {props.activeChat?.id && 
-          <ChatInput addMessage={addMessage} id={props.activeChat?.id}/>
-}
+          {props.activeChat?.id && (
+            <ChatInput addMessage={addMessage} id={props.activeChat?.id} />
+          )}
         </div>
 
         {/* <UserProfileSidebar
@@ -451,10 +504,8 @@ const UserChat = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { userOnline ,activeTab,activeChat,chats} = state.user;
-  return { userOnline, activeTab ,activeChat,chats};
+  const { userOnline, user, activeChat, chats } = state.user;
+  return { userOnline, user, activeChat, chats };
 };
 
-export default withRouter(
-  connect(mapStateToProps)(UserChat)
-);
+export default withRouter(connect(mapStateToProps)(UserChat));

@@ -42,17 +42,18 @@ const ChatInput=({addMessage,id})=> {
     //function for send data to onaddMessage function(in userChat/index.js component)
     const onaddMessage = (e, textMessage) => {
         e.preventDefault();
+        console.log("id is ",id)
         //if text value is not emptry then call onaddMessage function
         if (textMessage !== "") {
             // todo add message
-            // props.onaddMessage(textMessage, "textMessage");
+            addMessage(textMessage, "textMessage",id);
             settextMessage("");
         }
 
         //if file input value is not empty then call onaddMessage function
         if (file.name !== "") {
             //TODO add messae
-            // props.onaddMessage(file, "fileMessage");
+            addMessage(file, "fileMessage",id);
             setfile({
                 name: "",
                 size: ""
@@ -61,7 +62,7 @@ const ChatInput=({addMessage,id})=> {
 
         //if image input value is not empty then call onaddMessage function
         if (fileImage !== "") {
-            // props.onaddMessage(fileImage, "imageMessage");
+            addMessage(fileImage, "imageMessage",id);
             setfileImage("")
         }
     }
@@ -81,8 +82,7 @@ const ChatInput=({addMessage,id})=> {
                         <Col xs="auto">
                             <div className="chat-input-links ms-md-2">
                                 <ul className="list-inline mb-0 ms-0">
-                                {/* <EmojiPicker height={500} width={400} /> */}
-                                {/* <EmojiPicker onEmojiClick={onEmojiClick}  /> */}
+                            
                                     <li className="list-inline-item">
                                         <ButtonDropdown className="emoji-dropdown" direction="up" isOpen={isOpen} toggle={toggle}>
                                             <DropdownToggle id="emoji" color="link" className="text-decoration-none font-size-16 btn-lg waves-effect">
