@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Input, Row, Col, UncontrolledTooltip, ButtonDropdown, DropdownToggle, DropdownMenu, Label, Form } from "reactstrap";
 import EmojiPicker from 'emoji-picker-react';
+import { connect } from 'formik';
 
-const ChatInput=(props)=> {
-    const [textMessage, settextMessage] = useState("");
+const ChatInput=({addMessage,id})=> {
+   const [textMessage, settextMessage] = useState("");
     const [isOpen, setisOpen] = useState(false);
     const [file, setfile] = useState({
         name: "",
@@ -37,20 +38,21 @@ const ChatInput=(props)=> {
             setfileImage(URL.createObjectURL(e.target.files[0]))
     }
 
+
     //function for send data to onaddMessage function(in userChat/index.js component)
     const onaddMessage = (e, textMessage) => {
         e.preventDefault();
         //if text value is not emptry then call onaddMessage function
         if (textMessage !== "") {
             // todo add message
-            props.onaddMessage(textMessage, "textMessage");
+            // props.onaddMessage(textMessage, "textMessage");
             settextMessage("");
         }
 
         //if file input value is not empty then call onaddMessage function
         if (file.name !== "") {
             //TODO add messae
-            props.onaddMessage(file, "fileMessage");
+            // props.onaddMessage(file, "fileMessage");
             setfile({
                 name: "",
                 size: ""
@@ -59,14 +61,16 @@ const ChatInput=(props)=> {
 
         //if image input value is not empty then call onaddMessage function
         if (fileImage !== "") {
-            props.onaddMessage(fileImage, "imageMessage");
+            // props.onaddMessage(fileImage, "imageMessage");
             setfileImage("")
         }
     }
 
     return (
+        
         <div className="p-3 p-lg-4 border-top mb-0">
-            {props.activeChat && 
+            
+           
                 <Form onSubmit={(e) => onaddMessage(e, textMessage)} >
                     <Row className='g-0'>
                         <Col>
@@ -120,9 +124,14 @@ const ChatInput=(props)=> {
                         </Col>
                     </Row>
                 </Form>
-}
+
             </div>
     );
 }
 
-export default ChatInput;
+
+  
+//   export default (ChatInput);
+  export default ChatInput;
+
+  

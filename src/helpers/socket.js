@@ -1,2 +1,4 @@
 import io from "socket.io-client";
-export const socket =io("ws://10.10.1.75:3004")
+import config from "../config";
+
+export const socket =io(`ws://${config.IP}:3004`)

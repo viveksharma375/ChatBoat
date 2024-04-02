@@ -12,7 +12,6 @@ import Settings from "./Tabs/Settings";
 import Invites from './Tabs/Invites';
 
 const ChatLeftSidebar=(props)=> {
-    console.log("propspssss",props.activeTab)
     const activeTab = props.activeTab;
 
     return (

@@ -1,4 +1,5 @@
 import React from "react";
+import config from "../config";
 
 const BoxElement = ({ child }) => {
   return (
@@ -8,7 +9,7 @@ const BoxElement = ({ child }) => {
           {child.profilePath ? (
             <div className={"chat-user-img " + " align-self-center me-3 ms-0"}>
               <img
-                src={child.profilePath}
+                src={`${config.BASE_URL}${child.profilePath}`}
                 className="rounded-circle avatar-xs"
                 alt="pic"
               />

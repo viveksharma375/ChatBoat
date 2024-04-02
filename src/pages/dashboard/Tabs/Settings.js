@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import API from '../../../helpers/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../redux/slice.auth';
+import config from '../../../config';
 
 const Settings = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -130,7 +131,7 @@ const Settings = () => {
             setProfile(profileData)
             if (profileData.profilePath) {
 
-                setcurrentImage(profileData.profilePath)
+                setcurrentImage(config.BASE_URL+profileData.profilePath)
             }
             setFormData({
                 firstName: profileData.firstName || "",

@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 
 //import images
 import user from "../../../assets/images/users/avatar-4.jpg";
+import config from "../../../config";
 
 const UserHead = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -41,7 +42,6 @@ const UserHead = (props) => {
     }
   }
 
-  console.log("ACTIVe ", props.activeChat);
   function deleteMessage() {
     let allUsers = props.users;
     let copyallUsers = allUsers;
@@ -65,10 +65,11 @@ const UserHead = (props) => {
                       <i className="ri-arrow-left-s-line"></i>
                     </Link>
                   </div>
-                  {props.activeChat !== "Null" ? (
+                  {props.activeChat.profilePath !== null ? (
                     <div className="me-3 ms-0">
                       <img
-                        src={props.activeChat?.profilePath}
+                      
+                        src={`${config.BASE_URL}${props.activeChat?.profilePath}`}
                         className="rounded-circle avatar-xs"
                         alt="chatvia"
                       />

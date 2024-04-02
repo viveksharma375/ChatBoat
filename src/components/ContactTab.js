@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
 import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import config from '../config';
+import { useDispatch } from 'react-redux';
+import { userActiveChat } from '../redux/slice.auth';
 
 const ContactTab = ({ keys, contact, t,handleRemove }) => {
-
+    const dispatch = useDispatch();
     const handleRemoveClick = (contactId) => {
         // Call the handleRemove function with the contactId as parameter
         handleRemove(contactId);
     };
+
+    const handleClick=(child)=>{
+        dispatch(userActiveChat({
+          activeChat:child
+        }))
+    
+      }
     return (
 
         <div key={keys} className={keys + 1 === 1 ? "" : "mt-3"}>
@@ -17,7 +27,7 @@ const ContactTab = ({ keys, contact, t,handleRemove }) => {
             <ul className="list-unstyled contact-list">
                 {
                     contact.children.map((child) =>
-                        <li key={child.id} >
+                        <li key={child.id}  onClick={()=>handleClick(child)}>
 
 
                             <div className="d-flex align-items-center">
@@ -29,7 +39,7 @@ const ContactTab = ({ keys, contact, t,handleRemove }) => {
                                         }
                                     >
                                         <img
-                                            src={child.profilePath}
+                                            src={`${config.BASE_URL}${child.profilePath}`}
                                             className="rounded-circle avatar-xs"
                                             alt="pic"
                                         />

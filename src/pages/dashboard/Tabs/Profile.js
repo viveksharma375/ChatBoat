@@ -18,11 +18,11 @@ import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import withRouter from "../../../components/withRouter";
 import { connect } from "react-redux";
+import config from "../../../config";
 const  Profile=(props)=> {
-  console.log("PROFILEEEEEEEEEEEEeee",props)
   const [isOpen, setisOpen] = useState(false);
   const profile = props.user;
-  const currentImage = props.user.profilePath;
+  const currentImage = config.BASE_URL+props.user.profilePath;
 
 
   const [isOpen1, setIsOpen1] = useState(true);

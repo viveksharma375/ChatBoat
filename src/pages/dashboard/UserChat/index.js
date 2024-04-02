@@ -437,8 +437,9 @@ const UserChat = (props) => {
               </CardBody>
             </ModalBody>
           </Modal>
-
-          <ChatInput onaddMessage={addMessage} />
+          {props.activeChat?.id && 
+          <ChatInput addMessage={addMessage} id={props.activeChat?.id}/>
+}
         </div>
 
         {/* <UserProfileSidebar

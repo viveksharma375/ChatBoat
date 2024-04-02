@@ -13,9 +13,9 @@ import SimpleBar from "simplebar-react";
 import OnlineUsers from "./OnlineUsers";
 import ChatItem from "../../../components/chatItem";
 import { socket } from "../../../helpers/socket";
-import { userConnected } from "../../../redux/slice.auth";
+import { userActiveChat, userConnected } from "../../../redux/slice.auth";
 
-const Chats = ({ connectedUsers, activeChat, userOnline }) => {
+const Chats = ({ connectedUsers, activeChat }) => {
   const [searchChat, setSearchChat] = useState("");
   const [filteredChatList, setFilteredChatList] = useState(connectedUsers);
   const dispatch = useDispatch();
@@ -28,14 +28,13 @@ const Chats = ({ connectedUsers, activeChat, userOnline }) => {
   }
 
   const setContactData=(data)=>{
-    console.log("MESHSDFJSJDFDF",data)
     dispatch(userConnected({
       connectedUsers:data
     }))
     
   }
   useEffect(() => {
-    var li = document.getElementById("conversation" + activeChat);
+    var li = document.getElementById(activeChat);
     if (li) {
       li.classList.add("active");
     }
@@ -45,7 +44,6 @@ const Chats = ({ connectedUsers, activeChat, userOnline }) => {
    
 
     setFilteredChatList(connectedUsers);
-    console.log("connectedUsers ddd",connectedUsers)
   }, [connectedUsers]);
 
   
@@ -88,7 +86,11 @@ const Chats = ({ connectedUsers, activeChat, userOnline }) => {
   const openUserChat = (e, chat) => {
     e.preventDefault();
     const index = connectedUsers.indexOf(chat);
-    userOnline(index);
+    console.log("indexxxxx",index)
+    dispatch(userActiveChat({
+      activeChat:chat
+    }))
+    
     const chatList = document.getElementById("chat-list");
     let currentli = null;
 
@@ -164,7 +166,6 @@ const Chats = ({ connectedUsers, activeChat, userOnline }) => {
             className="list-unstyled chat-list chat-user-list"
             id="chat-list"
           >
-            {console.log("connectedUSers",connectedUsers)}
             {connectedUsers?.map((chat, key) => (
 
               <ChatItem key={key} chat={chat} active_user={activeChat} openUserChat={openUserChat} />
@@ -180,8 +181,8 @@ const Chats = ({ connectedUsers, activeChat, userOnline }) => {
 }
 
 const mapStateToProps = (state) => {
-  const {activeChat, userOnline ,connectedUsers} = state.user;
-  return { userOnline ,activeChat,connectedUsers};
+  const {activeChat ,connectedUsers} = state.user;
+  return { activeChat,connectedUsers};
 };
 
 export default connect(mapStateToProps)(Chats);
