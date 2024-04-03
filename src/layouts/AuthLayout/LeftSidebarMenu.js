@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Nav,
@@ -9,11 +9,10 @@ import {
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
+  Badge,
 } from "reactstrap";
 import classnames from "classnames";
 import { connect, useDispatch, useSelector } from "react-redux";
-
-
 
 //Import Images
 import logo from "../../assets/images/logo.svg";
@@ -29,22 +28,22 @@ import germany from "../../assets/images/flags/germany.jpg";
 import italy from "../../assets/images/flags/italy.jpg";
 import russia from "../../assets/images/flags/russia.jpg";
 import { userActiveTab, userLayout } from "../../redux/slice.auth";
+import config from "../../config";
 
 const LeftSidebarMenu = (props) => {
   const dispatch = useDispatch();
   const layout = useSelector((state) => state.user.layout);
-
+  const [ifNotification, setIsNotification] = useState(false);
   const mode = layout === "dark" ? "light" : "dark";
-
+  // const notification = useSelector((state)=>state.user.notifcation)
   const onChangeLayoutMode = (value) => {
     console.log("valueeee ", value);
-   
-      dispatch(
-        userLayout({
-          layout: value,
-        })
-      );
-    
+
+    dispatch(
+      userLayout({
+        layout: value,
+      })
+    );
   };
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -57,11 +56,21 @@ const LeftSidebarMenu = (props) => {
   const toggleMobile = () => setDropdownOpenMobile(!dropdownOpenMobile);
 
   const toggleTab = (tab) => {
-    dispatch(userActiveTab({
-        activeTab:tab
-    }))
-   
+    if (tab == "notification") {
+      setIsNotification(false);
+    }
+    dispatch(
+      userActiveTab({
+        activeTab: tab,
+      })
+    );
   };
+
+  useEffect(()=>{
+    if(props.notification>0){
+      setIsNotification(true)
+    }
+  },[props.notification])
 
   const activeTab = props.activeTab;
 
@@ -166,7 +175,15 @@ const LeftSidebarMenu = (props) => {
                 toggleTab("notification");
               }}
             >
-              <i className="ri-notification-2-line"></i>
+              {ifNotification == false ? (
+                <i className="ri-notification-2-line "></i>
+              ) : (
+                <i className="ri-notification-badge-fill "></i>
+              )}
+
+              {/* <Badge color="danger" className="position-absolute top-0 start-100 translate-middle">
+                <span>!</span>
+              </Badge> */}
             </NavLink>
           </NavItem>
           <UncontrolledTooltip target="Notification" placement="top">
@@ -294,11 +311,28 @@ const LeftSidebarMenu = (props) => {
             toggle={toggle}
           >
             <DropdownToggle className="nav-link" tag="a">
-              <img
+              {/* <img
                 src={avatar1}
                 alt=""
                 className="profile-user rounded-circle"
+              /> */}
+              {props.user?.profilePath === null ? (
+              <div className="chat-user-img align-self-center ms-2">
+                <div className="avatar-xs">
+                  <span className="avatar-title rounded-circle bg-soft-primary  text-primary">
+                    {props.user.firstName.charAt(0)}
+                    {props.user.lastName.charAt(0)}
+                  </span>
+                </div>
+              </div>
+              ) : (
+              <img
+                src={`${config.BASE_URL}${props.user?.profilePath}`}
+                alt="chatvia"
+                className="profile-user rounded-circle"
               />
+              )
+}
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem

@@ -11,6 +11,7 @@ const initialState = {
   activeTab: "chat",
   activeChat: null,
   allUser: [],
+  notification :0,
 };
 
 const userSlice = createSlice({
@@ -39,6 +40,9 @@ const userSlice = createSlice({
     },
     userLayout: (state, action) => {
       state.layout = action.payload.layout;
+      if (document.body) {
+        document.body.setAttribute("data-layout-mode", state.layout === "light" ? "light" : "dark");
+      }
     },
     userActiveTab: (state, action) => {
       state.activeTab = action.payload.activeTab;
@@ -48,6 +52,10 @@ const userSlice = createSlice({
     },
     userConnected: (state, action) => {
       state.connectedUsers = action.payload.connectedUsers;
+    },
+
+    userNotification: (state, action) => {
+      state.notification = action.payload.notification;
     },
 
     userAll: (state, action) => {
@@ -61,10 +69,11 @@ const userSlice = createSlice({
       state.chats = [];
       state.groups = [];
       state.layout = "light";
-      state.activeTab = null;
+      state.activeTab = "chat";
       state.activeChat = null;
       state.allUser = [];
       state.connectedUsers = [];
+      state.notification = 0;
     },
   },
 });
@@ -81,6 +90,7 @@ export const {
   userConnected,
   userChats,
   userGroups,
+  userNotification,
 } = userSlice.actions;
 
 export default userSlice.reducer;

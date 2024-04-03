@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, InputGroup, UncontrolledTooltip } from "reactstrap";
 import API from "../../../helpers/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import config from "../../../config";
+import { userNotification } from "../../../redux/slice.auth";
 
 const Invites = () => {
   const [contacts, setContacts] = useState([]);
   const apiInstance = new API();
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token);
   useEffect(() => {
     fetchContacts();
@@ -17,9 +19,14 @@ const Invites = () => {
       const response = await apiInstance.getWithToken(
         "/contact/fetchInvites",
         token
-      );
-      if (response.status) {
+        );
+        if (response.status) {
+          
+        // console.log("fetchhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",response.message.data.length)
         setContacts(response.message.data);
+        dispatch(userNotification({
+          notification:response.message.data.length
+        }))
       }
     } catch (error) {
       console.error("Error fetching contacts:", error);

@@ -29,16 +29,16 @@ import { useTranslation } from "react-i18next";
 //Import Images
 import logodark from "../../assets/images/logo-dark.png";
 import logolight from "../../assets/images/logo-light.png";
+import API from "../../helpers/api";
 
 /**
  * Register component
  * @param {*} props
  */
 const Register = (props) => {
-  const dispatch = useDispatch();
   /* intilize t variable for multi language implementation */
   const { t } = useTranslation();
-
+  const apiInstance = new API();
   // validation
   const formik = useFormik({
     initialValues: {
@@ -89,24 +89,19 @@ const Register = (props) => {
       //   .required("You must accept the Terms and Privacy Policy"),
     }),
     onSubmit: async (values) => {
-      console.log("Submit is called", values);
-      // const isLogin = await apiInstance.post("/user/login", values);
-      // if (isLogin.status) {
-      //   dispatch(loginUser({
-      //     token:isLogin.message.token,
-      //   }))
+      let data = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        password: values.password,
+      };
+      console.log("Submit is called", data);
+      const response = await apiInstance.post("/user/register", data);
 
-      //   const response = await apiInstance.getWithToken(
-      //     "/user/email",
-      //     isLogin.message.token
-      //   );
-      //   if (response.status) {
-      //     dispatch(userData({
-      //       user:response.message.data,
-      //     }))
-      //   }
-
-      //   props.router.navigate("/dashboard")
+      if (response.status) {
+        props.router.navigate("/login");
+      }
     },
   });
 

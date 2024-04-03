@@ -51,17 +51,20 @@ const UserChat = (props) => {
     console.log("MESHSDFJSJDFDF", data);
     dispatch(
       userChats({
-        chats:data,
+        chats: data,
       })
     );
   };
 
   const handleIncomingMessage = (data) => {
     console.log("handleIncomingMessage", data);
-    console.log("props.activeChat?.id ",props.activeChat?.id)
-    console.log("props.activeChat?.id === data.id",props.activeChat?.id === data.author)
-    if (props.activeChat?.id === data.author ) {
-      setchatMessages([...chatMessages, data])
+    console.log("props.activeChat?.id ", props.activeChat?.id);
+    console.log(
+      "props.activeChat?.id === data.id",
+      props.activeChat?.id === data.author
+    );
+    if (props.activeChat?.id === data.author) {
+      setchatMessages([...chatMessages, data]);
       dispatch(
         userChats({
           chats: [...chatMessages, data],
@@ -102,13 +105,13 @@ const UserChat = (props) => {
   // },[dispatch,chatMessages])
 
   useEffect(() => {
-    fetchChats()
+    fetchChats();
     ref.current.recalculate();
     if (ref.current.el) {
       ref.current.getScrollElement().scrollTop =
         ref.current.getScrollElement().scrollHeight;
     }
-  }, [dispatch,chatMessages, props.activeChat?.id, props.chats]);
+  }, [dispatch, chatMessages, props.activeChat?.id, props.chats]);
 
   const toggle = () => setModal(!modal);
 
@@ -226,12 +229,23 @@ const UserChat = (props) => {
                     <div className="conversation-list">
                       <div className="chat-avatar">
                         {chat.author === props.user?.id ? (
-                          <img
-                            src={`${config.BASE_URL}${props.user?.profilePath}`}
-                            alt="chatvia"
-                          />
+                          props.user?.profilePath === null ? (
+                            <div className="chat-user-img align-self-center ">
+                              <div className="avatar-xs">
+                                <span className="avatar-title rounded-circle bg-soft-primary text-primary">
+                                  {props.user.firstName.charAt(0)}
+                                  {props.user.lastName.charAt(0)}
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <img
+                              src={`${config.BASE_URL}${props.user?.profilePath}`}
+                              alt="chatv"
+                            />
+                          )
                         ) : props.activeChat?.profilePath === null ? (
-                          <div className="chat-user-img align-self-center me-3">
+                          <div className="chat-user-img align-self-center">
                             <div className="avatar-xs">
                               <span className="avatar-title rounded-circle bg-soft-primary text-primary">
                                 {props.activeChat.firstName.charAt(0)}
@@ -247,8 +261,11 @@ const UserChat = (props) => {
                         )}
                       </div>
 
-                      <div className="user-chat-content text-break " style={{maxWidth:"450px"}}>
-                        <div className="ctext-wrap " >
+                      <div
+                        className="user-chat-content text-break "
+                        style={{ maxWidth: "450px" }}
+                      >
+                        <div className="ctext-wrap ">
                           <div className="ctext-wrap-content">
                             {chat.message && (
                               <p className="mb-0">{chat.message}</p>
@@ -337,12 +354,23 @@ const UserChat = (props) => {
                           ) : (
                             <div className="chat-avatar">
                               {chat?.author === props.user.id ? (
-                                <img
-                                  src={`${config.BASE_URL}${props.user.profilePath}`}
-                                  alt="chatvia"
-                                />
+                                props.user?.profilePath === null ? (
+                                  <div className="chat-user-img align-self-center">
+                                    <div className="avatar-xs">
+                                      <span className="avatar-title rounded-circle bg-soft-primary text-primary">
+                                        {props.user.firstName.charAt(0)}
+                                        {props.user.lastName.charAt(0)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <img
+                                    src={`${config.BASE_URL}${props.user?.profilePath}`}
+                                    alt="chatvia"
+                                  />
+                                )
                               ) : props.activeChat?.profilePath === null ? (
-                                <div className="chat-user-img align-self-center me-3">
+                                <div className="chat-user-img align-self-center ">
                                   <div className="avatar-xs">
                                     <span className="avatar-title rounded-circle bg-soft-primary text-primary">
                                       {props.activeChat.firstName.charAt(0)}
@@ -361,12 +389,23 @@ const UserChat = (props) => {
                         ) : (
                           <div className="chat-avatar">
                             {chat.author === props.user.id ? (
+                             props.user?.profilePath === null ? (
+                              <div className="chat-user-img align-self-center ">
+                                <div className="avatar-xs">
+                                  <span className="avatar-title rounded-circle bg-soft-primary text-primary">
+                                    {props.user.firstName.charAt(0)}
+                                    {props.user.lastName.charAt(0)}
+                                  </span>
+                                </div>
+                              </div>
+                            ) : (
                               <img
-                                src={`${config.BASE_URL}${props.user.profilePath} `}
+                                src={`${config.BASE_URL}${props.user?.profilePath}`}
                                 alt="chatvia"
                               />
+                            )
                             ) : props.activeChat?.profilePath === null ? (
-                              <div className="chat-user-img align-self-center me-3">
+                              <div className="chat-user-img align-self-center">
                                 <div className="avatar-xs">
                                   <span className="avatar-title rounded-circle bg-soft-primary text-primary">
                                     {props.activeChat?.firstName.charAt(0)}
@@ -384,7 +423,10 @@ const UserChat = (props) => {
                         )
                       }
 
-                      <div className="user-chat-content text-break  " style={{maxWidth:"450px"}}>
+                      <div
+                        className="user-chat-content text-break  "
+                        style={{ maxWidth: "450px" }}
+                      >
                         <div className="ctext-wrap">
                           <div className="ctext-wrap-content ">
                             {chat.message && (
@@ -415,7 +457,6 @@ const UserChat = (props) => {
                               <p className="chat-time mb-0">
                                 <i className="ri-time-line align-middle"></i>{" "}
                                 <span className="align-middle">
-                                  
                                   {format(new Date(chat.timestamp), "HH:mm a")}
                                 </span>
                               </p>

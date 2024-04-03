@@ -22,7 +22,7 @@ import config from "../../../config";
 const  Profile=(props)=> {
   const [isOpen, setisOpen] = useState(false);
   const profile = props.user;
-  const currentImage = config.BASE_URL+props.user.profilePath;
+  const currentImage = props.user.profilePath;
 
 
   const [isOpen1, setIsOpen1] = useState(true);
@@ -56,8 +56,9 @@ const  Profile=(props)=> {
           <div className="text-center  p-4 border-bottom">
             {currentImage ?
               <div className="mb-4">
+                {console.log("currentImage ",currentImage)}
                 <img
-                  src={currentImage}
+                  src={`${config.BASE_URL}${currentImage}`}
 
                   className="rounded-circle avatar-lg img-thumbnail"
                   alt={profile.firstName} 
